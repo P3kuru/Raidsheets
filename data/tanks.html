@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FFXIV Level 100 Tank Mitigation Guide</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1a1a1d;
+            color: #e0e0e0;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: auto;
+            background: #25252b;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+        h1 { color: #f1c40f; text-align: center; border-bottom: 2px solid #f1c40f; padding-bottom: 10px; }
+        h2 { color: #3498db; border-left: 5px solid #3498db; padding-left: 10px; margin-top: 30px; }
+        h3 { color: #e74c3c; margin-bottom: 10px; }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            background: #2f2f35;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #444;
+            text-align: left;
+        }
+        th { background-color: #3e3e46; color: #fff; }
+        tr:nth-child(even) { background-color: #35353c; }
+
+        .role-section { background: #2c3e50; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
+        .trait-highlight { color: #2ecc71; font-weight: bold; }
+        .invuln { font-style: italic; color: #ff79c6; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>FFXIV Dawntrail: Tank Mitigation (Lv. 100)</h1>
+
+    <div class="role-section">
+        <h2>Shared Role Actions</h2>
+        <p>Essential utility used by all tanks. Note the <span class="trait-highlight">Level 94 Traits</span>.</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>Ability</th>
+                    <th>Effect</th>
+                    <th>Lv. 100 Note</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Rampart</strong></td>
+                    <td>20% Mitigation (20s)</td>
+                    <td><span class="trait-highlight">Enhanced Rampart:</span> +15% HP recovery from healing.</td>
+                </tr>
+                <tr>
+                    <td><strong>Reprisal</strong></td>
+                    <td>-10% Damage Out (AOE)</td>
+                    <td>Increased duration (15s).</td>
+                </tr>
+                <tr>
+                    <td><strong>Arm's Length</strong></td>
+                    <td>Anti-Knockback / Slow</td>
+                    <td>20% Slow (Enemies) for dungeon trash.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h2>Job-Specific Toolkits</h2>
+
+    <h3>🛡️ Paladin (PLD)</h3>
+    <table>
+        <tr><th>Skill</th><th>Type</th><th>Effect</th></tr>
+        <tr><td><strong>Holy Sheltron</strong></td><td>Short CD</td><td>15% Mit + Knight's Benediction (HoT).</td></tr>
+        <tr><td><strong>Guardian</strong></td><td>Lv 92 Upgrade</td><td>30% Mitigation + increased healing received.</td></tr>
+        <tr><td><strong>Bulwark</strong></td><td>Utility</td><td>100% Block Rate (approx 20% Mit).</td></tr>
+        <tr><td><strong>Divine Veil</strong></td><td>Party Mit</td><td>AOE Shield + small Heal.</td></tr>
+        <tr class="invuln"><td><strong>Hallowed Ground</strong></td><td>Invuln</td><td>Total Immunity (420s CD).</td></tr>
+    </table>
+
+    <h3>🪓 Warrior (WAR)</h3>
+    <table>
+        <tr><th>Skill</th><th>Type</th><th>Effect</th></tr>
+        <tr><td><strong>Bloodwhetting</strong></td><td>Short CD</td><td>10% Mit + Shield + Heal per hit landed.</td></tr>
+        <tr><td><strong>Damnation</strong></td><td>Lv 92 Upgrade</td><td>30% Mitigation + HoT when hit.</td></tr>
+        <tr><td><strong>Thrill of Battle</strong></td><td>Self-Heal</td><td>+20% Max HP and heals that amount.</td></tr>
+        <tr><td><strong>Shake It Off</strong></td><td>Party Mit</td><td>AOE Shield (Stronger if other buffs are active).</td></tr>
+        <tr class="invuln"><td><strong>Holmgang</strong></td><td>Invuln</td><td>HP cannot fall below 1 (240s CD).</td></tr>
+    </table>
+
+    <h3>🌑 Dark Knight (DRK)</h3>
+    <table>
+        <tr><th>Skill</th><th>Type</th><th>Effect</th></tr>
+        <tr><td><strong>The Blackest Night</strong></td><td>Short CD</td><td>Shield for 25% Max HP. Free attack if broken.</td></tr>
+        <tr><td><strong>Shadowed Vigil</strong></td><td>Lv 92 Upgrade</td><td>30% Mit + Heal if HP drops < 50%.</td></tr>
+        <tr><td><strong>Dark Mind</strong></td><td>Magic Mit</td><td>20% Magic mitigation (90s CD).</td></tr>
+        <tr><td><strong>Dark Missionary</strong></td><td>Party Mit</td><td>10% Magic mitigation for the group.</td></tr>
+        <tr class="invuln"><td><strong>Living Dead</strong></td><td>Invuln</td><td>Hit 1 HP to activate lifesteal (300s CD).</td></tr>
+    </table>
+
+    <h3>🔫 Gunbreaker (GNB)</h3>
+    <table>
+        <tr><th>Skill</th><th>Type</th><th>Effect</th></tr>
+        <tr><td><strong>Heart of Corundum</strong></td><td>Short CD</td><td>15% Mit + 15% Clarified Mit + 900p Heal.</td></tr>
+        <tr><td><strong>Great Nebula</strong></td><td>Lv 92 Upgrade</td><td>40% Mitigation + 20% Max HP increase.</td></tr>
+        <tr><td><strong>Camouflage</strong></td><td>Utility</td><td>10% Mit + 50% Parry Rate.</td></tr>
+        <tr><td><strong>Heart of Light</strong></td><td>Party Mit</td><td>10% Magic mitigation for the group.</td></tr>
+        <tr class="invuln"><td><strong>Superbolide</strong></td><td>Invuln</td><td>Reduces HP to 1; Total Immunity (360s CD).</td></tr>
+    </table>
+</div>
+
+</body>
+</html>

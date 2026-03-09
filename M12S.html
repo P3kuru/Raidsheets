@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>M12S — DYM?</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --crust:    #11111b;
+    --mantle:   #181825;
+    --base:     #1e1e2e;
+    --surface0: #313244;
+    --surface1: #45475a;
+    --surface2: #585b70;
+    --overlay0: #6c7086;
+    --overlay1: #7f849c;
+    --subtext0: #a6adc8;
+    --subtext1: #bac2de;
+    --text:     #cdd6f4;
+    --mauve:    #cba6f7;
+    --red:      #f38ba8;
+    --maroon:   #eba0ac;
+    --peach:    #fab387;
+    --yellow:   #f9e2af;
+    --green:    #a6e3a1;
+    --teal:     #94e2d5;
+    --blue:     #89b4fa;
+    --lavender: #b4befe;
+
+    --elev-1: 0 1px 3px rgba(0,0,0,.4), 0 1px 2px rgba(0,0,0,.3);
+    --elev-2: 0 3px 6px rgba(0,0,0,.45), 0 2px 4px rgba(0,0,0,.3);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--base); color: var(--text); font-family: 'Nunito', sans-serif; font-size: 13px; line-height: 1.5; min-height: 100vh; overflow-y: scroll; }
+
+  /* ── APP BAR ── */
+  .app-bar { background: var(--mantle); box-shadow: var(--elev-2); position: sticky; top: 0; z-index: 100; padding: 0 32px; }
+  .app-bar-inner { max-width: 1400px; margin: 0 auto; height: 64px; display: flex; align-items: center; gap: 16px; }
+  .app-bar-logo { font-family: 'Rajdhani', sans-serif; font-size: 22px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--lavender); white-space: nowrap; text-decoration: none; }
+  .app-bar-logo span { color: var(--subtext0); font-weight: 500; }
+  .app-bar-back { font-family: 'Rajdhani', sans-serif; font-size: 14px; font-weight: 700; color: var(--lavender); text-decoration: none; display: flex; align-items: center; gap: 6px; transition: color .15s, gap .15s; }
+  .app-bar-back:hover { color: var(--subtext1); gap: 10px; }
+  .app-bar-divider { width: 1px; height: 24px; background: var(--surface1); flex-shrink: 0; }
+  .app-bar-subtitle { font-size: 12px; color: var(--subtext0); }
+  .app-bar-spacer { flex: 1; }
+  .app-bar-fight-title { font-family: 'Rajdhani', sans-serif; font-size: 26px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text); line-height: 1; }
+  .app-bar-fight-title span { color: var(--lavender); }
+  .app-bar-meta { font-size: 12px; color: var(--overlay1); text-align: right; line-height: 1.4; }
+  .app-bar-meta strong { color: var(--lavender); font-weight: 600; }
+
+  /* ── TABS ── */
+  .tabs-wrap { background: var(--mantle); border-bottom: 1px solid var(--surface0); padding: 0 32px; }
+  .tabs { max-width: 1400px; margin: 0 auto; display: flex; gap: 12px; padding: 12px 0; align-items: center; justify-content: center; }
+  .tab-btn {
+    background: rgba(102,108,118,.15); border: none; border-radius: 6px;
+    color: var(--subtext0); cursor: pointer;
+    font-family: 'Rajdhani', sans-serif; font-size: 13px; font-weight: 700;
+    letter-spacing: 1.5px; text-transform: uppercase;
+    padding: 10px 16px; white-space: nowrap;
+    transition: background .15s, color .15s, transform .08s;
+  }
+  .tab-btn:hover { background: rgba(102,108,118,.3); color: var(--subtext1); transform: translateY(-1px); }
+  .tab-btn.active { background: var(--lavender); color: var(--crust); box-shadow: 0 2px 8px rgba(180,190,254,.2); }
+
+  /* ── PANELS ── */
+  .panel { display: none; padding: 24px 32px 60px; max-width: 1400px; margin: 0 auto; }
+  .panel.active { display: block; }
+
+  /* ── TABLE WRAP ── */
+  .table-wrap { overflow-x: auto; border-radius: 10px; border: 1px solid var(--surface0); margin-bottom: 24px; box-shadow: var(--elev-1); scrollbar-gutter: stable; }
+
+  table { width: 100%; border-collapse: collapse; min-width: 960px; }
+
+  /* ── HEADER ── */
+  thead tr { background: var(--mantle); border-bottom: 1px solid var(--surface0); }
+  thead th {
+    font-family: 'Rajdhani', sans-serif; font-size: 10px; font-weight: 700;
+    letter-spacing: 2px; text-transform: uppercase; padding: 10px 10px;
+    text-align: left; white-space: nowrap; color: var(--overlay1);
+  }
+  thead th img.header-icon { width: 14px; height: 14px; margin-right: 4px; vertical-align: middle; }
+  .col-time  { width: 52px; color: var(--subtext0) !important; }
+  .col-mech  { width: 160px; color: var(--text) !important; }
+  .col-t     { color: var(--blue) !important; width: 160px; }
+  .col-h     { color: var(--green) !important; width: 135px; }
+  .col-m     { color: var(--red) !important; width: 115px; }
+  .col-r     { color: var(--yellow) !important; width: 115px; }
+
+  /* ── ROWS ── */
+  tbody tr { border-bottom: 1px solid var(--surface0); transition: background .1s, border-left-color .1s; border-left: 3px solid transparent; }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:nth-child(odd)  { background: var(--base); }
+  tbody tr:nth-child(even) { background: var(--mantle); }
+  tbody tr:hover { background: rgba(180,190,254,.08); border-left-color: var(--teal); }
+
+  td { padding: 10px 12px; vertical-align: top; }
+
+  .td-time {
+    font-family: 'Rajdhani', sans-serif; font-size: 13px; font-weight: 800;
+    color: var(--subtext1); white-space: nowrap; padding-top: 10px;
+  }
+  .td-mech { font-weight: 700; color: var(--text); font-size: 12px; padding-top: 10px; }
+
+  /* ── PILLS ── */
+  .pills { display: flex; flex-wrap: wrap; gap: 6px; }
+
+  .pill {
+    display: inline-block; border-radius: 6px;
+    padding: 4px 10px; font-size: 10px; font-weight: 700;
+    white-space: nowrap; line-height: 1.5; backdrop-filter: blur(4px);
+    text-shadow: 0 1px 2px rgba(0,0,0,.3);
+    transition: transform .1s, box-shadow .1s;
+  }
+  .pill:hover { transform: scale(1.05); }
+  .pill.pill-invuln { font-weight: 800; }
+  /* role-coloured party mits */
+  .pill-t { background: rgba(137,180,250,.18); color: var(--blue);    border: 1px solid rgba(137,180,250,.35); }
+  .pill-h { background: rgba(166,227,161,.18); color: var(--green);   border: 1px solid rgba(166,227,161,.35); }
+  .pill-m { background: rgba(243,139,168,.18); color: var(--red);     border: 1px solid rgba(243,139,168,.35); }
+  .pill-r { background: rgba(249,226,175,.18); color: var(--yellow);  border: 1px solid rgba(249,226,175,.35); }
+
+  /* tank personal mits — peach, slightly bolder border */
+  .pill-personal {
+    background: rgba(250,179,135,.2);
+    color: var(--peach);
+    border: 1px solid rgba(250,179,135,.4);
+  }
+  .pill-personal .icon::after { content: ' ⭐'; font-size: 9px; margin-left: 2px; }
+
+  .td-empty { color: var(--surface1); font-size: 12px; padding-top: 9px; }
+
+  /* ── NOTES ── */
+  .notes {
+    background: var(--mantle);
+    border: 1px solid var(--surface0);
+    border-left: 3px solid var(--teal);
+    border-radius: 8px;
+    padding: 14px 18px;
+    box-shadow: var(--elev-1);
+  }
+  .notes h4 {
+    font-family: 'Rajdhani', sans-serif; font-size: 11px; font-weight: 700;
+    letter-spacing: 2px; text-transform: uppercase; color: var(--teal);
+    margin-bottom: 8px;
+  }
+  .notes ul { list-style: none; }
+  .notes li { font-size: 12px; color: var(--subtext0); line-height: 1.7; }
+  .notes li::before { content: '›  '; color: var(--overlay0); }
+
+  /* ── LEGEND ── */
+  .header-section { display: flex; flex-direction: column; gap: 16px; margin-bottom: 20px; }
+  .legend {
+    display: flex; gap: 20px; flex-wrap: wrap;
+    font-size: 11px; font-weight: 700;
+    font-family: 'Rajdhani', sans-serif; letter-spacing: 1px; text-transform: uppercase;
+    justify-content: center;
+  }
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+  .legend-dot { width: 8px; height: 8px; border-radius: 2px; }
+
+  footer { background: var(--mantle); border-top: 1px solid var(--surface0); padding: 18px 32px; }
+  .footer-inner { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+  footer p { font-size: 11px; color: var(--overlay0); }
+
+  /* ── JOB SELECTION DROPDOWNS ── */
+  .job-select {
+    background: transparent;
+    border: 1px solid var(--overlay1);
+    border-radius: 4px;
+    color: var(--text);
+    font-family: 'Nunito', sans-serif;
+    font-size: 12px;
+    padding: 4px 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-top: 4px;
+  }
+
+  .job-select:hover {
+    background: rgba(102, 108, 118, 0.2);
+    border-color: var(--lavender);
+  }
+
+  .job-select:focus {
+    outline: none;
+    background: rgba(102, 108, 118, 0.3);
+    border-color: var(--lavender);
+    box-shadow: 0 0 0 2px rgba(180, 190, 254, 0.2);
+  }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--crust); }
+  ::-webkit-scrollbar-thumb { background: var(--surface1); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<div class="app-bar">
+  <div class="app-bar-inner">
+    <a href="index.html" class="app-bar-back">← Back</a>
+    <div class="app-bar-divider"></div>
+    <div class="app-bar-fight-title">M12S <span>Lindwurm</span></div>
+    <div class="app-bar-spacer"></div>
+    <div class="app-bar-meta">Last updated: <strong>March 2026</strong></div>
+  </div>
+</div>
+
+<div class="tabs-wrap">
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('p1', this)">Phase 1</button>
+    <button class="tab-btn"        onclick="switchTab('p2', this)">Phase 2</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PHASE 1
+═══════════════════════════════════════════ -->
+<div id="tab-p1" class="panel active">
+
+  <div class="header-section">
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--blue)"></div><span style="color:var(--blue)">Tank</span></div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div><span style="color:var(--green)">Healer</span></div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div><span style="color:var(--red)">Melee</span></div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--yellow)"></div><span style="color:var(--yellow)">Ranged / Caster</span></div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--peach)"></div><span style="color:var(--peach)">Tank Personal</span></div>
+    </div>
+
+    <div class="notes">
+      <h4>Notes — Phase 1</h4>
+      <ul>
+        <li>All mechanics require shields.</li>
+        <li>For the Slaughtersheds, delay 15s mitigation until the later half of the cast bar so it covers both the spread and stack damage.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th class="col-time">Time</th>
+          <th class="col-mech">Mechanic</th>
+          <th class="col-t">
+            <img class="header-icon" src="images/icons/roletank.png" alt="Tank" />
+            <select class="job-select" data-slot="T1" data-role="tank" onchange="changeJob(this)">
+              <option value="">Select MT</option>
+              <option value="PLD">Paladin</option>
+              <option value="WAR">Warrior</option>
+              <option value="DRK">Dark Knight</option>
+              <option value="GNB">Gunbreaker</option>
+            </select>
+          </th>
+          <th class="col-t">
+            <img class="header-icon" src="images/icons/roletank.png" alt="Tank" />
+            <select class="job-select" data-slot="T2" data-role="tank" onchange="changeJob(this)">
+              <option value="">Select OT</option>
+              <option value="PLD">Paladin</option>
+              <option value="WAR">Warrior</option>
+              <option value="DRK">Dark Knight</option>
+              <option value="GNB">Gunbreaker</option>
+            </select>
+          </th>
+          <th class="col-h">
+            <img class="header-icon" src="images/icons/rolehealer.png" alt="Healer" />
+            <select class="job-select" data-slot="H1" data-role="healer" onchange="changeJob(this)">
+              <option value="">Select H1</option>
+              <option value="WHM">White Mage</option>
+              <option value="SCH">Scholar</option>
+              <option value="AST">Astrologian</option>
+              <option value="SGE">Sage</option>
+            </select>
+          </th>
+          <th class="col-h">
+            <img class="header-icon" src="images/icons/rolehealer.png" alt="Healer" />
+            <select class="job-select" data-slot="H2" data-role="healer" onchange="changeJob(this)">
+              <option value="">Select H2</option>
+              <option value="WHM">White Mage</option>
+              <option value="SCH">Scholar</option>
+              <option value="AST">Astrologian</option>
+              <option value="SGE">Sage</option>
+            </select>
+          </th>
+          <th class="col-m">
+            <img class="header-icon" src="images/icons/roledeeps.png" alt="Melee" />
+            <select class="job-select" data-slot="M1" data-role="melee" onchange="changeJob(this)">
+              <option value="">Select M1</option>
+              <option value="MRD">Marauder</option>
+              <option value="DRG">Dragoon</option>
+              <option value="MNK">Monk</option>
+              <option value="SAM">Samurai</option>
+              <option value="RPR">Reaper</option>
+            </select>
+          </th>
+          <th class="col-m">
+            <img class="header-icon" src="images/icons/roledeeps.png" alt="Melee" />
+            <select class="job-select" data-slot="M2" data-role="melee" onchange="changeJob(this)">
+              <option value="">Select M2</option>
+              <option value="MRD">Marauder</option>
+              <option value="DRG">Dragoon</option>
+              <option value="MNK">Monk</option>
+              <option value="SAM">Samurai</option>
+              <option value="RPR">Reaper</option>
+            </select>
+          </th>
+          <th class="col-r">
+            <img class="header-icon" src="images/icons/roledeeps.png" alt="Ranged" />
+            <select class="job-select" data-slot="R1" data-role="ranged" onchange="changeJob(this)">
+              <option value="">Select R1</option>
+              <option value="BRD">Bard</option>
+              <option value="MCH">Machinist</option>
+              <option value="DNC">Dancer</option>
+              <option value="BLM">Black Mage</option>
+              <option value="SMN">Summoner</option>
+            </select>
+          </th>
+          <th class="col-r">
+            <img class="header-icon" src="images/icons/roledeeps.png" alt="Ranged" />
+            <select class="job-select" data-slot="R2" data-role="ranged" onchange="changeJob(this)">
+              <option value="">Select R2</option>
+              <option value="BRD">Bard</option>
+              <option value="MCH">Machinist</option>
+              <option value="DNC">Dancer</option>
+              <option value="BLM">Black Mage</option>
+              <option value="SMN">Summoner</option>
+            </select>
+          </th>
+        </tr>
+      </thead>
+      <tbody id="p1-body"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PHASE 2
+═══════════════════════════════════════════ -->
+<div id="tab-p2" class="panel">
+
+  <div class="header-section">
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--blue)"></div><span style="color:var(--blue)">Tank</span></div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div><span style="color:var(--green)">Healer</span></div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div><span style="color:var(--red)">Melee</span></div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--yellow)"></div><span style="color:var(--yellow)">Ranged / Caster</span></div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--peach)"></div><span style="color:var(--peach)">Tank Personal</span></div>
+    </div>
+
+    <div class="notes">
+      <h4>Notes — Phase 2</h4>
+      <ul>
+        <li>All mechanics require shields.</li>
+        <li>Using 15s mitigation late for Lindwurm's Meteor will also cover Arcadian Arcanum.</li>
+        <li>Arcadian Hell I and II are ~16s apart — 20s mitigation covers both. Sacred Soil covers both if used late; Kerachole only covers one.</li>
+        <li>Healers: keep spare single-target heals and mits on the MT throughout — autos average ~70,000 per hit.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th class="col-time">Time</th>
+          <th class="col-mech">Mechanic</th>
+          <th class="col-t">
+            <img class="header-icon" src="images/TankRole.png" alt="Tank" />
+            <select class="job-select" data-slot="T1" data-role="tank" onchange="changeJob(this)">
+              <option value="">— Tank —</option>
+              <option value="PLD">Paladin</option>
+              <option value="WAR">Warrior</option>
+              <option value="DRK">Dark Knight</option>
+              <option value="GNB">Gunbreaker</option>
+            </select>
+          </th>
+          <th class="col-t">
+            <img class="header-icon" src="images/TankRole.png" alt="Tank" />
+            <select class="job-select" data-slot="T2" data-role="tank" onchange="changeJob(this)">
+              <option value="">— Tank —</option>
+              <option value="PLD">Paladin</option>
+              <option value="WAR">Warrior</option>
+              <option value="DRK">Dark Knight</option>
+              <option value="GNB">Gunbreaker</option>
+            </select>
+          </th>
+          <th class="col-h">
+            <img class="header-icon" src="images/HealerRole.png" alt="Healer" />
+            <select class="job-select" data-slot="H1" data-role="healer" onchange="changeJob(this)">
+              <option value="">— Healer —</option>
+              <option value="WHM">White Mage</option>
+              <option value="SCH">Scholar</option>
+              <option value="AST">Astrologian</option>
+              <option value="SGE">Sage</option>
+            </select>
+          </th>
+          <th class="col-h">
+            <img class="header-icon" src="images/HealerRole.png" alt="Healer" />
+            <select class="job-select" data-slot="H2" data-role="healer" onchange="changeJob(this)">
+              <option value="">— Healer —</option>
+              <option value="WHM">White Mage</option>
+              <option value="SCH">Scholar</option>
+              <option value="AST">Astrologian</option>
+              <option value="SGE">Sage</option>
+            </select>
+          </th>
+          <th class="col-m">
+            <img class="header-icon" src="images/DPSRole.png" alt="Melee" />
+            <select class="job-select" data-slot="M1" data-role="melee" onchange="changeJob(this)">
+              <option value="">— Melee —</option>
+              <option value="MRD">Marauder</option>
+              <option value="DRG">Dragoon</option>
+              <option value="MNK">Monk</option>
+              <option value="SAM">Samurai</option>
+              <option value="RPR">Reaper</option>
+            </select>
+          </th>
+          <th class="col-m">
+            <img class="header-icon" src="images/DPSRole.png" alt="Melee" />
+            <select class="job-select" data-slot="M2" data-role="melee" onchange="changeJob(this)">
+              <option value="">— Melee —</option>
+              <option value="MRD">Marauder</option>
+              <option value="DRG">Dragoon</option>
+              <option value="MNK">Monk</option>
+              <option value="SAM">Samurai</option>
+              <option value="RPR">Reaper</option>
+            </select>
+          </th>
+          <th class="col-r">
+            <img class="header-icon" src="images/DPSRole.png" alt="Ranged" />
+            <select class="job-select" data-slot="R1" data-role="ranged" onchange="changeJob(this)">
+              <option value="">— Ranged —</option>
+              <option value="BRD">Bard</option>
+              <option value="MCH">Machinist</option>
+              <option value="DNC">Dancer</option>
+              <option value="BLM">Black Mage</option>
+              <option value="SMN">Summoner</option>
+            </select>
+          </th>
+          <th class="col-r">
+            <img class="header-icon" src="images/DPSRole.png" alt="Ranged" />
+            <select class="job-select" data-slot="R2" data-role="ranged" onchange="changeJob(this)">
+              <option value="">— Ranged —</option>
+              <option value="BRD">Bard</option>
+              <option value="MCH">Machinist</option>
+              <option value="DNC">Dancer</option>
+              <option value="BLM">Black Mage</option>
+              <option value="SMN">Summoner</option>
+            </select>
+          </th>
+        </tr>
+      </thead>
+      <tbody id="p2-body"></tbody>
+    </table>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <p>Not affiliated with Square Enix · Plans are community suggestions</p>
+    <p>Maintained by <strong style="color:var(--subtext0)">Arvid Vhalnan</strong> @ Omega</p>
+  </div>
+</footer>
+
+<script>
+// ─────────────────────────────────────────────
+// JOB ABILITIES DATABASE
+// All mitigation abilities for each job
+// ─────────────────────────────────────────────
+const JOB_ABILITIES = {
+  // TANKS
+  PLD: { name: 'Paladin', role: 'tank', abilities: {
+    'rampart': 'ABILITYREPLACE', 'sentinel': 'ABILITYREPLACE', 'halcyon': 'ABILITYREPLACE',
+    'hallowed_ground': 'ABILITYREPLACE', 'divine_veil': 'ABILITYREPLACE', 'passage_of_arms': 'ABILITYREPLACE'
+  }},
+  WAR: { name: 'Warrior', role: 'tank', abilities: {
+    'rampart': 'ABILITYREPLACE', 'thrill_of_battle': 'ABILITYREPLACE', 'vengeance': 'ABILITYREPLACE',
+    'holmgang': 'ABILITYREPLACE', 'bloodwhetting': 'ABILITYREPLACE', 'nascent_flash': 'ABILITYREPLACE'
+  }},
+  DRK: { name: 'Dark Knight', role: 'tank', abilities: {
+    'rampart': 'ABILITYREPLACE', 'shadow_skin': 'ABILITYREPLACE', 'dark_mind': 'ABILITYREPLACE',
+    'living_dead': 'ABILITYREPLACE', 'dark_missionary': 'ABILITYREPLACE', 'blood_price': 'ABILITYREPLACE'
+  }},
+  GNB: { name: 'Gunbreaker', role: 'tank', abilities: {
+    'rampart': 'ABILITYREPLACE', 'nebula': 'ABILITYREPLACE', 'aurora': 'ABILITYREPLACE',
+    'superbolide': 'ABILITYREPLACE', 'heart_of_stone': 'ABILITYREPLACE', 'gnashing_strike': 'ABILITYREPLACE'
+  }},
+  // HEALERS
+  WHM: { name: 'White Mage', role: 'healer', abilities: {
+    'cure': 'ABILITYREPLACE', 'medica': 'ABILITYREPLACE', 'regen': 'ABILITYREPLACE',
+    'divine_benison': 'ABILITYREPLACE', 'aquaveil': 'ABILITYREPLACE', 'asylum': 'ABILITYREPLACE'
+  }},
+  SCH: { name: 'Scholar', role: 'healer', abilities: {
+    'physick': 'ABILITYREPLACE', 'adloquium': 'ABILITYREPLACE', 'succor': 'ABILITYREPLACE',
+    'sacred_soil': 'ABILITYREPLACE', 'indomitability': 'ABILITYREPLACE', 'selene': 'ABILITYREPLACE'
+  }},
+  AST: { name: 'Astrologian', role: 'healer', abilities: {
+    'benefic': 'ABILITYREPLACE', 'aspected_benefic': 'ABILITYREPLACE', 'essential_dignity': 'ABILITYREPLACE',
+    'collective_unconscious': 'ABILITYREPLACE', 'neutral_sect': 'ABILITYREPLACE', 'aspected_helios': 'ABILITYREPLACE'
+  }},
+  SGE: { name: 'Sage', role: 'healer', abilities: {
+    'diagnosis': 'ABILITYREPLACE', 'prognosis': 'ABILITYREPLACE', 'pepsis': 'ABILITYREPLACE',
+    'eukrasian_diagnosis': 'ABILITYREPLACE', 'eukrasian_prognosis': 'ABILITYREPLACE', 'krasis': 'ABILITYREPLACE'
+  }},
+  // MELEE DPS
+  MRD: { name: 'Marauder', role: 'melee', abilities: {
+    'reprisal': 'ABILITYREPLACE', 'feint': 'ABILITYREPLACE', 'bloodbath': 'ABILITYREPLACE',
+    'aggression': 'ABILITYREPLACE', 'parry': 'ABILITYREPLACE', 'leg_sweep': 'ABILITYREPLACE'
+  }},
+  DRG: { name: 'Dragoon', role: 'melee', abilities: {
+    'reprisal': 'ABILITYREPLACE', 'feint': 'ABILITYREPLACE', 'bloodbath': 'ABILITYREPLACE',
+    'elusive_jump': 'ABILITYREPLACE', 'leg_sweep': 'ABILITYREPLACE', 'spineshatter_dive': 'ABILITYREPLACE'
+  }},
+  MNK: { name: 'Monk', role: 'melee', abilities: {
+    'reprisal': 'ABILITYREPLACE', 'feint': 'ABILITYREPLACE', 'bloodbath': 'ABILITYREPLACE',
+    'riddle_of_earth': 'ABILITYREPLACE', 'leg_sweep': 'ABILITYREPLACE', 'mantra': 'ABILITYREPLACE'
+  }},
+  SAM: { name: 'Samurai', role: 'melee', abilities: {
+    'reprisal': 'ABILITYREPLACE', 'feint': 'ABILITYREPLACE', 'bloodbath': 'ABILITYREPLACE',
+    'third_eye': 'ABILITYREPLACE', 'leg_sweep': 'ABILITYREPLACE', 'hissatsu_yaten': 'ABILITYREPLACE'
+  }},
+  RPR: { name: 'Reaper', role: 'melee', abilities: {
+    'reprisal': 'ABILITYREPLACE', 'feint': 'ABILITYREPLACE', 'bloodbath': 'ABILITYREPLACE',
+    'shadow_foresight': 'ABILITYREPLACE', 'leg_sweep': 'ABILITYREPLACE', 'hell_s_ingress': 'ABILITYREPLACE'
+  }},
+  // RANGED DPS
+  BRD: { name: 'Bard', role: 'ranged', abilities: {
+    'addle': 'ABILITYREPLACE', 'reprisal': 'ABILITYREPLACE', 'troubadour': 'ABILITYREPLACE',
+    'nature_minne': 'ABILITYREPLACE', 'bloodletter': 'ABILITYREPLACE', 'rain_of_death': 'ABILITYREPLACE'
+  }},
+  MCH: { name: 'Machinist', role: 'ranged', abilities: {
+    'addle': 'ABILITYREPLACE', 'reprisal': 'ABILITYREPLACE', 'tactician': 'ABILITYREPLACE',
+    'shield_samba': 'ABILITYREPLACE', 'bloodbath': 'ABILITYREPLACE', 'rook_autoturret': 'ABILITYREPLACE'
+  }},
+  DNC: { name: 'Dancer', role: 'ranged', abilities: {
+    'addle': 'ABILITYREPLACE', 'reprisal': 'ABILITYREPLACE', 'curing_waltz': 'ABILITYREPLACE',
+    'shield_samba': 'ABILITYREPLACE', 'bloodbath': 'ABILITYREPLACE', 'closed_position': 'ABILITYREPLACE'
+  }},
+  BLM: { name: 'Black Mage', role: 'ranged', abilities: {
+    'addle': 'ABILITYREPLACE', 'reprisal': 'ABILITYREPLACE', 'manaward': 'ABILITYREPLACE',
+    'manafont': 'ABILITYREPLACE', 'surecast': 'ABILITYREPLACE', 'apocatastasis': 'ABILITYREPLACE'
+  }},
+  SMN: { name: 'Summoner', role: 'ranged', abilities: {
+    'addle': 'ABILITYREPLACE', 'reprisal': 'ABILITYREPLACE', 'energy_drain': 'ABILITYREPLACE',
+    'seraph': 'ABILITYREPLACE', 'bloodbath': 'ABILITYREPLACE', 'ruin_iv': 'ABILITYREPLACE'
+  }}
+};
+
+// ─────────────────────────────────────────────
+// PARTY COMPOSITION TRACKING
+// ─────────────────────────────────────────────
+const PARTY_COMPOSITION = {
+  T1: '', T2: '', H1: '', H2: '', M1: '', M2: '', R1: '', R2: ''
+};
+
+function changeJob(selectElement) {
+  const slot = selectElement.dataset.slot;
+  const job = selectElement.value;
+  PARTY_COMPOSITION[slot] = job;
+  console.log('Party Composition Updated:', PARTY_COMPOSITION);
+  // TODO: Re-render tables with new composition
+}
+
+// ─────────────────────────────────────────────
+// PERSONAL MIT KEYWORDS
+// Abilities matching these are rendered as peach pills
+// ─────────────────────────────────────────────
+const PERSONAL_KEYWORDS = [
+  'invuln', 'invulnerability', 'rampart', 'kitchen sink',
+  'short mit', '40%', '90s', 'buddy mit', 'hallowed',
+  'superbolide', 'living dead', 'walking dead'
+];
+
+function isPersonal(ability) {
+  const lower = ability.toLowerCase();
+  return PERSONAL_KEYWORDS.some(k => lower.includes(k));
+}
+
+// ─────────────────────────────────────────────
+// RENDER HELPERS
+// ─────────────────────────────────────────────
+function pillClass(role) {
+  return { t: 'pill-t', h: 'pill-h', m: 'pill-m', r: 'pill-r' }[role];
+}
+
+function renderCell(abilities, role) {
+  if (!abilities || abilities.every(a => !a.trim())) {
+    return `<td></td>`;
+  }
+  const pills = abilities.map(a => {
+    const cls = isPersonal(a) ? 'pill-personal' : pillClass(role);
+    const invulnClass = a.toLowerCase().includes('invuln') ? 'pill-invuln' : '';
+    return `<span class="pill ${cls} ${invulnClass}">${a}</span>`;
+  }).join('');
+  return `<td><div class="pills">${pills}</div></td>`;
+}
+
+function renderRow(time, mech, t1, t2, h1, h2, m1, m2, r1, r2) {
+  const split = s => s ? s.split('+').map(p => p.trim()).filter(Boolean) : [];
+  return `<tr>
+    <td class="td-time">${time}</td>
+    <td class="td-mech">${mech}</td>
+    ${renderCell(split(t1), 't')}
+    ${renderCell(split(t2), 't')}
+    ${renderCell(split(h1), 'h')}
+    ${renderCell(split(h2), 'h')}
+    ${renderCell(split(m1), 'm')}
+    ${renderCell(split(m2), 'm')}
+    ${renderCell(split(r1), 'r')}
+    ${renderCell(split(r2), 'r')}
+  </tr>`;
+}
+
+// ─────────────────────────────────────────────
+// PHASE 1 DATA
+// [time, mechanic, T1, T2, H1, H2, M1, M2, R1, R2]
+// ─────────────────────────────────────────────
+const P1 = [
+  ['0:16', 'The Fixer',
+    'Reprisal', 'Party Mit',
+    'Collective Unconscious', 'Zoe Shields + Kerachole',
+    'Feint', null, 'Party Mit', 'Addle'],
+
+  ['1:20', 'Mortal Slayer',
+    'Rampart + 90s + Short Mit', 'Rampart + 90s + Short Mit',
+    null, 'Kerachole',
+    null, null, null, null],
+
+  ['1:28', 'Ravenous Reach',
+    'Party Mit', 'Reprisal',
+    'Neutral Sect + Sun Sign', 'Holos + Panhaima + Philosophia',
+    null, 'Feint', null, null],
+
+  ['1:37', 'Fourth-wall Fusion / Visceral Burst',
+    'Reprisal + 40% + Short Mit', '40% + Short Mit',
+    'Macrocosmos', 'Zoe Shields + Kerachole',
+    'Feint', null, 'Party Mit', 'Addle'],
+
+  ['1:48', 'The Fixer',
+    null, 'Party Mit',
+    'Collective Unconscious', null,
+    null, null, null, null],
+
+  ['3:08', 'Splattershed',
+    null, null,
+    null, 'Kerachole',
+    null, 'Feint', null, null],
+
+  ['3:49', 'Split Scourge',
+    'Invulnerability', 'Invulnerability',
+    null, null,
+    null, null, null, null],
+
+  ['3:51', 'Venomous Scourge',
+    'Reprisal', null,
+    null, 'Panhaima + Kerachole + Zoe Shields',
+    'Feint', null, 'Party Mit', 'Addle'],
+
+  ['4:01', 'The Fixer',
+    null, 'Party Mit',
+    'Collective Unconscious', null,
+    null, null, null, null],
+
+  ['4:28', 'Ravenous Reach',
+    'Party Mit', 'Reprisal',
+    'Neutral Sect + Sun Sign', 'Holos',
+    null, null, null, null],
+
+  ['4:50', 'Splattershed',
+    'Reprisal', null,
+    null, 'Kerachole',
+    null, 'Feint', null, null],
+
+  ['5:15', 'Mortal Slayer',
+    'Kitchen Sink', 'Kitchen Sink',
+    null, 'Eukrasian Prognosis',
+    null, null, null, null],
+
+  ['5:42', 'Slaughtershed I',
+    null, 'Reprisal',
+    'Collective Unconscious', 'Kerachole + Philosophia',
+    'Feint', null, null, 'Addle'],
+
+  ['6:11', 'Slaughtershed II',
+    'Reprisal', 'Party Mit',
+    'Macrocosmos', 'Kerachole + Panhaima + Zoe Shields',
+    null, null, 'Party Mit', null],
+
+  ['6:40', 'Slaughtershed III',
+    'Party Mit', 'Reprisal',
+    'Collective Unconscious + Neutral Sect + Sun Sign', 'Kerachole + Holos',
+    null, 'Feint', null, null],
+];
+
+// ─────────────────────────────────────────────
+// PHASE 2 DATA
+// ─────────────────────────────────────────────
+const P2 = [
+  ['0:17', 'Arcadia Aflame',
+    'Reprisal', 'Party Mit',
+    'Collective Unconscious', 'Holos + Kerachole',
+    'Feint', null, 'Party Mit', 'Addle'],
+
+  ['0:40', 'Mighty Magic / Top-tier Slam I',
+    null, null,
+    'Neutral Sect', 'Panhaima + Zoe Shields',
+    null, null, null, null],
+
+  ['1:01', 'Mighty Magic / Top-tier Slam II',
+    'Party Mit', 'Reprisal',
+    'Sun Sign', 'Kerachole',
+    null, 'Feint', null, null],
+
+  ['1:10', 'Double Sabat',
+    'Invulnerability', 'Kitchen Sink',
+    null, null,
+    null, null, null, null],
+
+  ['2:08', 'Firefall Splash',
+    'Reprisal', 'Party Mit',
+    'Macrocosmos', 'Philosophia + Holos + Kerachole',
+    'Feint', null, 'Party Mit', 'Addle'],
+
+  ['2:41', 'Reenactment',
+    'Party Mit', 'Reprisal',
+    'Collective Unconscious + Neutral Sect + Sun Sign', 'Zoe Shields + Panhaima + Kerachole',
+    null, 'Feint', null, null],
+
+  ['3:22', 'Blood Mana',
+    'Rampart + Short Mit', 'Rampart + Short Mit',
+    null, 'Kerachole',
+    null, null, null, null],
+
+  ['3:50', 'Netherworld Near/Far',
+    'Reprisal', null,
+    'Collective Unconscious', 'Kerachole',
+    'Feint', null, 'Party Mit', 'Addle'],
+
+  ['3:58', 'Arcadia Aflame',
+    null, 'Party Mit',
+    null, null,
+    null, null, null, null],
+
+  ['4:06', 'Double Sabat',
+    'Kitchen Sink', 'Invulnerability',
+    null, null,
+    null, null, null, null],
+
+  ['4:30', 'Idyllic Dream',
+    'Party Mit', 'Reprisal',
+    null, 'Holos + Zoe Shields + Kerachole',
+    null, 'Feint', null, null],
+
+  ['5:45', "Lindwurm's Meteor",
+    'Reprisal', 'Party Mit',
+    'Collective Unconscious', 'Kerachole',
+    'Feint', null, 'Party Mit', 'Addle'],
+
+  ['6:12', 'Twisted Vision',
+    'Party Mit', null,
+    'Everything', null,
+    'Use Personals', null, null, null],
+
+  ['7:20', 'Reenactment + Twisted Vision',
+    'Reprisal', 'Party Mit',
+    null, 'Kerachole',
+    null, 'Feint', 'Party Mit', null],
+
+  ['7:53', 'Idyllic Dream',
+    'Party Mit', 'Reprisal',
+    'Collective Unconscious', 'Kerachole',
+    'Feint', null, null, 'Addle'],
+
+  ['8:01', 'Double Sabat',
+    'Invulnerability', 'Kitchen Sink',
+    null, null,
+    null, null, null, null],
+
+  ['8:36', 'Arcadian Hell I',
+    'Reprisal', null,
+    'Neutral Sect', 'Holos',
+    null, null, null, null],
+
+  ['8:52', 'Arcadian Hell II',
+    null, 'Reprisal + Party Mit',
+    'Collective Unconscious + Sun Sign', 'Zoe Shields + Panhaima + Kerachole',
+    null, 'Feint', 'Party Mit', null],
+];
+
+// ─────────────────────────────────────────────
+// INJECT ROWS
+// ─────────────────────────────────────────────
+document.getElementById('p1-body').innerHTML = P1.map(r => renderRow(...r)).join('');
+document.getElementById('p2-body').innerHTML = P2.map(r => renderRow(...r)).join('');
+
+// ─────────────────────────────────────────────
+// TAB SWITCHING
+// ─────────────────────────────────────────────
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+</script>
+</body>
+</html>

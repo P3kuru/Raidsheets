@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DYM? — FFXIV Mitigation Plans</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --crust:    #11111b;
+    --mantle:   #181825;
+    --base:     #1e1e2e;
+    --surface0: #313244;
+    --surface1: #45475a;
+    --surface2: #585b70;
+    --overlay0: #6c7086;
+    --overlay1: #7f849c;
+    --subtext0: #a6adc8;
+    --subtext1: #bac2de;
+    --text:     #cdd6f4;
+    --mauve:    #cba6f7;
+    --red:      #f38ba8;
+    --maroon:   #eba0ac;
+    --peach:    #fab387;
+    --yellow:   #f9e2af;
+    --green:    #a6e3a1;
+    --teal:     #94e2d5;
+    --blue:     #89b4fa;
+    --lavender: #b4befe;
+
+    --savage-dim:   rgba(243,139,168,.12);
+    --ultimate-dim: rgba(203,166,247,.12);
+
+    --elev-1: 0 1px 3px rgba(0,0,0,.4), 0 1px 2px rgba(0,0,0,.3);
+    --elev-2: 0 3px 6px rgba(0,0,0,.45), 0 2px 4px rgba(0,0,0,.3);
+    --elev-8: 0 12px 28px rgba(0,0,0,.55), 0 4px 10px rgba(0,0,0,.35);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--base); color: var(--text); font-family: 'Nunito', sans-serif; font-size: 13px; line-height: 1.5; min-height: 100vh; overflow-y: scroll; }
+
+  /* ── APP BAR ── */
+  .app-bar { background: var(--mantle); box-shadow: var(--elev-2); position: sticky; top: 0; z-index: 100; padding: 0 32px; }
+  .app-bar-inner { max-width: 1400px; margin: 0 auto; height: 64px; display: flex; align-items: center; gap: 16px; }
+  .app-bar-logo { font-family: 'Rajdhani', sans-serif; font-size: 22px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--lavender); white-space: nowrap; text-decoration: none; }
+  .app-bar-logo span { color: var(--subtext0); font-weight: 500; }
+  .app-bar-divider { width: 1px; height: 24px; background: var(--surface1); flex-shrink: 0; }
+  .app-bar-subtitle { font-family: 'Rajdhani', sans-serif; font-size: 26px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text); line-height: 1; }
+  .app-bar-spacer { flex: 1; }
+  .app-bar-meta { font-size: 12px; color: var(--overlay1); text-align: right; line-height: 1.4; }
+  .app-bar-meta strong { color: var(--lavender); font-weight: 600; }
+
+  /* ── HERO ── */
+  .hero { background: linear-gradient(135deg, var(--mantle) 0%, var(--crust) 100%); border-bottom: 1px solid var(--surface0); padding: 40px 32px 36px; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; width: 600px; height: 600px; border-radius: 50%; background: radial-gradient(circle, rgba(203,166,247,.06) 0%, transparent 70%); top: -200px; right: -100px; pointer-events: none; }
+  .hero::after  { content: ''; position: absolute; width: 400px; height: 400px; border-radius: 50%; background: radial-gradient(circle, rgba(137,180,250,.04) 0%, transparent 70%); bottom: -150px; left: -50px; pointer-events: none; }
+  .hero-inner { max-width: 1400px; margin: 0 auto; position: relative; }
+  .hero h1 { font-family: 'Rajdhani', sans-serif; font-size: 40px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--text); line-height: 1.1; margin-bottom: 8px; }
+  .hero h1 em { font-style: normal; color: var(--lavender); }
+  .hero-desc { font-size: 13px; color: var(--subtext0); max-width: 480px; }
+  .stats-row { display: flex; gap: 12px; margin-top: 24px; flex-wrap: wrap; }
+  .stat-chip { background: var(--surface0); border-radius: 8px; padding: 7px 14px; display: flex; align-items: center; gap: 10px; box-shadow: var(--elev-1); }
+  .stat-num { font-family: 'Rajdhani', sans-serif; font-size: 22px; font-weight: 700; line-height: 1; }
+  .stat-label { font-size: 10px; color: var(--subtext0); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; line-height: 1.3; }
+  .stat-savage .stat-num   { color: var(--red); }
+  .stat-ultimate .stat-num { color: var(--mauve); }
+
+  /* ── CONTENT ── */
+  .content { max-width: 1400px; margin: 32px auto 80px; padding: 0 32px; }
+
+  /* ── SECTION ── */
+  .section { margin-bottom: 44px; }
+  .section-header { margin-bottom: 16px; }
+  .section-label {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--overlay0);
+    margin-bottom: 4px;
+  }
+  .section-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-title::after { content: ''; flex: 1; height: 1px; background: var(--surface0); }
+
+  /* ── CARDS ── */
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px; }
+  .card { background: var(--mantle); border-radius: 10px; border: 1px solid var(--surface0); overflow: hidden; text-decoration: none; display: flex; flex-direction: column; box-shadow: var(--elev-1); transition: transform .2s cubic-bezier(.2,.8,.2,1), box-shadow .2s, border-color .2s; }
+  .card.has-sheet:hover { transform: translateY(-3px); box-shadow: var(--elev-8); }
+  .card.type-savage.has-sheet:hover   { border-color: rgba(243,139,168,.4); }
+  .card.type-ultimate.has-sheet:hover { border-color: rgba(203,166,247,.4); }
+  .card.no-sheet { opacity: .4; cursor: default; pointer-events: none; }
+  .card-strip { height: 2px; }
+  .type-savage .card-strip   { background: linear-gradient(90deg, var(--red), var(--maroon)); }
+  .type-ultimate .card-strip { background: linear-gradient(90deg, var(--mauve), var(--lavender)); }
+  .card-body { padding: 10px 12px 8px; flex: 1; }
+  .card-top { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 2px; }
+  .card-name { font-family: 'Rajdhani', sans-serif; font-size: 15px; font-weight: 700; color: var(--text); line-height: 1.2; }
+  .card-badge { font-size: 9px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; padding: 2px 7px; border-radius: 20px; white-space: nowrap; flex-shrink: 0; }
+  .badge-savage   { background: var(--savage-dim);   color: var(--red); }
+  .badge-ultimate { background: var(--ultimate-dim); color: var(--mauve); }
+  .card-subtitle { font-size: 11px; color: var(--subtext0); }
+  .card-series { font-size: 10px; color: var(--surface2); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-top: 3px; }
+  .card-footer { padding: 7px 12px; border-top: 1px solid var(--surface0); }
+  .card-footer-label { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; }
+  .label-view { color: var(--lavender); display: flex; align-items: center; gap: 4px; transition: gap .15s; }
+  .card.has-sheet:hover .label-view { gap: 8px; }
+  .label-soon { color: var(--surface1); }
+
+  /* ── FOOTER ── */
+  footer { background: var(--mantle); border-top: 1px solid var(--surface0); padding: 18px 32px; }
+  .footer-inner { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+  footer p { font-size: 11px; color: var(--overlay0); }
+
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--crust); }
+  ::-webkit-scrollbar-thumb { background: var(--surface1); border-radius: 3px; }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  .section:nth-child(1) { animation: fadeUp .3s ease .04s both; }
+  .section:nth-child(2) { animation: fadeUp .3s ease .10s both; }
+</style>
+</head>
+<body>
+
+<div class="app-bar">
+  <div class="app-bar-inner">
+    <a href="index.html" class="app-bar-logo">DYM<span>?</span></a>
+    <div class="app-bar-divider"></div>
+    <div class="app-bar-subtitle">Did you Mit?</div>
+    <div class="app-bar-spacer"></div>
+    <div class="app-bar-meta">Last updated: <strong>March 2026</strong></div>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="hero-inner">
+    <h2>Why didn't you mit, Lois?!</h2>
+    <br>
+    <p class="hero-desc">Honestly, finding mitplans is sometimes just as frustrating as finding out which strats to use. Being a massive fan of WTFDIG, maybe the community could benefit from a similar idea but for mitplans!<br>
+      <br>For now it's a little pet project of mine</p>  
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- DAWNTRAIL SAVAGE -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-label">Dawntrail · 7.x</div>
+      <div class="section-title">Savage</div>
+    </div>
+    <div class="cards" id="savageCards"></div>
+  </div>
+
+  <!-- ULTIMATES -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-label">All Expansions</div>
+      <div class="section-title">Ultimate</div>
+    </div>
+    <div class="cards" id="ultimateCards"></div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <p>Not affiliated with Square Enix · Plans are community suggestions</p>
+<p>Maintained by <strong style="color:var(--subtext0)">Arvid Vhalnan</strong> @ Omega</p>
+  </div>
+</footer>
+
+<script>
+// ══════════════════════════════════════════════════════
+//  FIGHT DATABASE
+//  sheet: 'filename.html'  →  card is clickable
+//  sheet: null             →  card shows "Coming soon"
+// ══════════════════════════════════════════════════════
+const SAVAGE = [
+  { id:'M12S', name:'M12S', subtitle:'Lindwurm', sheet:'M12S.html' },
+  { id:'M11S', name:'M11S', subtitle:'The Tyrant', sheet:null },
+  { id:'M10S', name:'M10S', subtitle:'Blowjob Brothers', sheet:null },
+  { id:'M9S',  name:'M9S',  subtitle:'Vamp Fatale', sheet:null },
+];
+
+const ULTIMATES = [
+  { id:'FRU',  name:'Futures Rewritten',          subtitle:'FRU',       sheet:null },
+  { id:'TOP',  name:'The Omega Protocol',         subtitle:'TOP',        sheet:null },
+  { id:'DSR',  name:"Dragonsong's Reprise",        subtitle:'DSR',        sheet:null },
+  { id:'TEA',  name:'The Epic of Alexander',      subtitle:'TEA',   sheet:null },
+  { id:'UWU',  name:"The Weapon's Refrain",        subtitle:'UWU',       sheet:null },
+  { id:'UCOB', name:'Unending Coil of Bahamut',   subtitle:'UCoB',       sheet:null },
+];
+
+function makeCard(f, type) {
+  const hasSheet = !!f.sheet;
+  const a = document.createElement('a');
+  a.className = `card type-${type} ${hasSheet ? 'has-sheet' : 'no-sheet'}`;
+  a.href = hasSheet ? f.sheet : '#';
+  if (!hasSheet) a.setAttribute('tabindex', '-1');
+  a.innerHTML = `
+    <div class="card-strip"></div>
+    <div class="card-body">
+      <div class="card-top">
+        <div class="card-name">${f.name}</div>
+        <div class="card-badge badge-${type}">${type === 'savage' ? 'Savage' : 'Ultimate'}</div>
+      </div>
+      <div class="card-subtitle">${f.subtitle}</div>
+    </div>
+    <div class="card-footer">
+      ${hasSheet
+        ? `<span class="card-footer-label label-view">View Sheet <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>`
+        : `<span class="card-footer-label label-soon">Coming Soon</span>`}
+    </div>`;
+  return a;
+}
+
+const savageGrid   = document.getElementById('savageCards');
+const ultimateGrid = document.getElementById('ultimateCards');
+
+SAVAGE.forEach(f   => savageGrid.appendChild(makeCard(f, 'savage')));
+ULTIMATES.forEach(f => ultimateGrid.appendChild(makeCard(f, 'ultimate')));
+
+document.getElementById('statSavage').textContent   = SAVAGE.filter(f => f.sheet).length;
+document.getElementById('statUltimate').textContent = ULTIMATES.filter(f => f.sheet).length;
+</script>
+</body>
+</html>
