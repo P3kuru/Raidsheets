@@ -54,13 +54,13 @@ const GENERIC_ABILITIES = {
     SGE: 'Holos',
     // Phys Ranged
     BRD: 'Troubadour',
-    MCH: 'Tactician',
+    MCH: {'Tactician','Dismantle'},
     DNC: 'Shield Samba',
     // Casters — no party mit
     BLM: null,
     SMN: null,
-    RDM: null,
-    PCT: null,
+    RDM: 'Magick Barrier',
+    PCT: 'Tempera Grassa',
   },
 
   // ── SHORT-CD PERSONAL MIT (~30s) ──
