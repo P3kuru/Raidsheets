@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>M12S — DYM?</title>
+    <title>DYM · M12S</title>
     <link
       href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap"
       rel="stylesheet"
@@ -161,7 +161,6 @@
       .panel {
         display: none;
         padding: 24px 32px 60px;
-        max-width: 1400px;
         margin: 0 auto;
       }
       .panel.active {
@@ -178,7 +177,7 @@
       table {
         width: 100%;
         border-collapse: collapse;
-        min-width: 960px;
+        min-width: 1200px;
       }
       thead tr {
         background: var(--mantle);
@@ -194,36 +193,35 @@
         text-align: left;
         white-space: nowrap;
         color: var(--overlay1);
+        border-right: 1px solid var(--surface0);
       }
-      thead th img.header-icon {
-        width: 14px;
-        height: 14px;
-        margin-right: 4px;
-        vertical-align: middle;
+      thead th:last-child {
+        border-right: none;
       }
+
       .col-time {
-        width: 52px;
+        width: 60px;
         color: var(--subtext0) !important;
       }
       .col-mech {
-        width: 160px;
+        width: 180px;
         color: var(--text) !important;
       }
       .col-t {
         color: var(--blue) !important;
-        width: 160px;
+        width: 190px;
       }
       .col-h {
         color: var(--green) !important;
-        width: 135px;
+        width: 190px;
       }
       .col-m {
         color: var(--red) !important;
-        width: 115px;
+        width: 175px;
       }
       .col-r {
         color: var(--yellow) !important;
-        width: 115px;
+        width: 175px;
       }
       tbody tr {
         border-bottom: 1px solid var(--surface0);
@@ -248,6 +246,10 @@
       td {
         padding: 10px 12px;
         vertical-align: top;
+        border-right: 1px solid var(--surface0);
+      }
+      td:last-child {
+        border-right: none;
       }
       .td-time {
         font-family: "Rajdhani", sans-serif;
@@ -265,20 +267,25 @@
       }
       .pills {
         display: flex;
-        flex-wrap: wrap;
-        gap: 6px;
+        flex-direction: column;
+        gap: 4px;
       }
       .pill {
-        display: inline-block;
+        display: block;
+        width: 100%;
         border-radius: 6px;
-        padding: 4px 10px;
+        padding: 4px 8px;
         font-size: 10px;
         font-weight: 700;
         white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
         line-height: 1.5;
         backdrop-filter: blur(4px);
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
         transition: transform 0.1s;
+        box-sizing: border-box;
+        text-align: center;
       }
       .pill:hover {
         transform: scale(1.05);
@@ -316,6 +323,9 @@
         flex-direction: column;
         gap: 16px;
         margin-bottom: 20px;
+        max-width: 1400px;
+        margin-left: auto;
+        margin-right: auto;
       }
       .legend {
         display: flex;
@@ -367,31 +377,98 @@
         content: "›  ";
         color: var(--overlay0);
       }
-      .job-select {
+      .cs-wrap {
+        position: relative;
+        width: 100%;
+      }
+      .cs-trigger {
+        display: flex;
+        align-items: center;
+        gap: 5px;
         background: var(--surface0);
         border: 1px solid var(--overlay1);
         border-radius: 4px;
         color: var(--text);
         font-family: "Nunito", sans-serif;
-        font-size: 12px;
+        font-size: 11px;
         padding: 4px 6px;
         cursor: pointer;
-        transition: all 0.2s ease;
-        margin-top: 4px;
+        transition: background 0.15s, border-color 0.15s;
+        width: 100%;
+        box-sizing: border-box;
       }
-      .job-select:hover {
+      .cs-trigger:hover {
         background: var(--surface1);
         border-color: var(--lavender);
       }
-      .job-select:focus {
-        outline: none;
+      .cs-trigger.open {
         background: var(--surface1);
         border-color: var(--lavender);
         box-shadow: 0 0 0 2px rgba(180, 190, 254, 0.2);
       }
-      .job-select option {
+      .cs-trigger img {
+        width: 14px;
+        height: 14px;
+        flex-shrink: 0;
+      }
+      .cs-label {
+        flex: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .cs-arrow {
+        font-size: 9px;
+        color: var(--overlay1);
+        flex-shrink: 0;
+      }
+      .cs-dropdown {
+        display: none;
+        position: fixed;
         background: var(--mantle);
+        border: 1px solid var(--surface1);
+        border-radius: 6px;
+        box-shadow: var(--elev-2);
+        z-index: 9999;
+        min-width: 140px;
+        overflow: hidden;
+      }
+      .cs-dropdown.open {
+        display: block;
+      }
+      .cs-option {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        padding: 6px 10px;
+        font-family: "Nunito", sans-serif;
+        font-size: 11px;
+        color: var(--subtext0);
+        cursor: pointer;
+        transition: background 0.1s, color 0.1s;
+      }
+      .cs-option:hover {
+        background: var(--surface0);
         color: var(--text);
+      }
+      .cs-option.selected {
+        color: var(--lavender);
+      }
+      .cs-option img {
+        width: 14px;
+        height: 14px;
+        flex-shrink: 0;
+      }
+      .cs-placeholder {
+        padding: 6px 10px;
+        font-family: "Nunito", sans-serif;
+        font-size: 11px;
+        color: var(--overlay0);
+        cursor: pointer;
+        transition: background 0.1s;
+      }
+      .cs-placeholder:hover {
+        background: var(--surface0);
       }
       footer {
         background: var(--mantle);
@@ -422,6 +499,143 @@
         background: var(--surface1);
         border-radius: 3px;
       }
+      /* ── Cheatsheet ── */
+      .cs-sheet-wrap {
+        max-width: 900px;
+        margin: 0 auto;
+      }
+      .cs-sheet-controls {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        flex-wrap: wrap;
+        margin-bottom: 24px;
+        background: var(--mantle);
+        border: 1px solid var(--surface0);
+        border-radius: 10px;
+        padding: 16px 20px;
+      }
+      .cs-sheet-label {
+        font-family: "Rajdhani", sans-serif;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--overlay1);
+        margin-bottom: 8px;
+        display: block;
+      }
+      .cs-slot-picker {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+      .cs-slot-btn {
+        background: rgba(102, 108, 118, 0.15);
+        border: 1px solid var(--surface1);
+        border-radius: 6px;
+        color: var(--subtext0);
+        cursor: pointer;
+        font-family: "Rajdhani", sans-serif;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        padding: 6px 12px;
+        transition: background 0.15s, color 0.15s, border-color 0.15s;
+      }
+      .cs-slot-btn:hover {
+        background: rgba(102, 108, 118, 0.3);
+        color: var(--text);
+      }
+      .cs-slot-btn.active {
+        background: var(--lavender);
+        color: var(--crust);
+        border-color: var(--lavender);
+      }
+      .cs-sheet-job-info {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-family: "Rajdhani", sans-serif;
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--text);
+      }
+      .cs-sheet-job-info img {
+        width: 24px;
+        height: 24px;
+      }
+      .cs-sheet-empty {
+        text-align: center;
+        color: var(--overlay0);
+        font-size: 13px;
+        padding: 60px 0;
+      }
+      .cs-sheet-phases {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+      }
+      @media (max-width: 700px) {
+        .cs-sheet-phases { grid-template-columns: 1fr; }
+      }
+      .cs-sheet-phase-title {
+        font-family: "Rajdhani", sans-serif;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--lavender);
+        margin-bottom: 10px;
+        padding-bottom: 6px;
+        border-bottom: 1px solid var(--surface0);
+      }
+      .cs-rows {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .cs-row {
+        display: grid;
+        grid-template-columns: 52px 1fr auto;
+        align-items: center;
+        gap: 10px;
+        background: var(--mantle);
+        border: 1px solid var(--surface0);
+        border-radius: 8px;
+        padding: 8px 12px;
+        transition: background 0.1s;
+      }
+      .cs-row:hover {
+        background: rgba(180, 190, 254, 0.06);
+      }
+      .cs-row-time {
+        font-family: "Rajdhani", sans-serif;
+        font-size: 14px;
+        font-weight: 800;
+        color: var(--subtext1);
+        white-space: nowrap;
+      }
+      .cs-row-mech {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--subtext0);
+      }
+      .cs-row-mits {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        align-items: flex-end;
+      }
+      .cs-row-mit {
+        border-radius: 6px;
+        padding: 3px 10px;
+        font-size: 10px;
+        font-weight: 700;
+        white-space: nowrap;
+        text-align: center;
+      }
     </style>
   </head>
   <body>
@@ -432,7 +646,7 @@
         <div class="app-bar-fight-title">M12S <span>Lindwurm</span></div>
         <div class="app-bar-spacer"></div>
         <div class="app-bar-meta">
-          Last updated: <strong>March 2026</strong>
+          Last updated: <strong>11/03/2026</strong>
         </div>
       </div>
     </div>
@@ -443,6 +657,7 @@
           Phase 1
         </button>
         <button class="tab-btn" onclick="switchTab('p2', this)">Phase 2</button>
+        <button class="tab-btn" onclick="switchTab('cs', this)">Cheatsheet</button>
       </div>
     </div>
 
@@ -545,6 +760,33 @@
       </div>
     </div>
 
+    <div id="tab-cs" class="panel">
+      <div class="cs-sheet-wrap">
+        <div class="cs-sheet-controls">
+          <div class="cs-sheet-slot-group">
+            <span class="cs-sheet-label">Your slot</span>
+            <div id="cs-slot-picker" class="cs-slot-picker"></div>
+          </div>
+          <div id="cs-sheet-job-info" class="cs-sheet-job-info"></div>
+        </div>
+        <div id="cs-sheet-no-selection" class="cs-sheet-empty">
+          Select a slot above to generate your cheatsheet.
+        </div>
+        <div id="cs-sheet-content" style="display:none">
+          <div class="cs-sheet-phases">
+            <div class="cs-sheet-phase">
+              <div class="cs-sheet-phase-title">Phase 1</div>
+              <div id="cs-p1-rows" class="cs-rows"></div>
+            </div>
+            <div class="cs-sheet-phase">
+              <div class="cs-sheet-phase-title">Phase 2</div>
+              <div id="cs-p2-rows" class="cs-rows"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <footer>
       <div class="footer-inner">
         <p>Not affiliated with Square Enix · Plans are community suggestions</p>
@@ -563,117 +805,175 @@
       // phase. Called once per phase on init.
       // ─────────────────────────────────────────────
       const HEADER_COLS = [
-        {
-          slot: "T1",
-          cls: "col-t",
-          icon: "../../images/icons/roletank.png",
-          alt: "Tank",
-          type: "tank",
-        },
-        {
-          slot: "T2",
-          cls: "col-t",
-          icon: "../../images/icons/roletank.png",
-          alt: "Tank",
-          type: "tank",
-        },
-        {
-          slot: "H1",
-          cls: "col-h",
-          icon: "../../images/icons/rolehealer.png",
-          alt: "Healer",
-          type: "healer",
-        },
-        {
-          slot: "H2",
-          cls: "col-h",
-          icon: "../../images/icons/rolehealer.png",
-          alt: "Healer",
-          type: "healer",
-        },
-        {
-          slot: "M1",
-          cls: "col-m",
-          icon: "../../images/icons/roledeeps.png",
-          alt: "Melee",
-          type: "melee",
-        },
-        {
-          slot: "M2",
-          cls: "col-m",
-          icon: "../../images/icons/roledeeps.png",
-          alt: "Melee",
-          type: "melee",
-        },
-        {
-          slot: "R1",
-          cls: "col-r",
-          icon: "../../images/icons/roledeeps.png",
-          alt: "Ranged",
-          type: "ranged",
-        },
-        {
-          slot: "R2",
-          cls: "col-r",
-          icon: "../../images/icons/roledeeps.png",
-          alt: "Ranged",
-          type: "ranged",
-        },
+        { slot: "T1", cls: "col-t", type: "tank" },
+        { slot: "T2", cls: "col-t", type: "tank" },
+        { slot: "H1", cls: "col-h", type: "healer" },
+        { slot: "H2", cls: "col-h", type: "healer" },
+        { slot: "M1", cls: "col-m", type: "melee" },
+        { slot: "M2", cls: "col-m", type: "melee" },
+        { slot: "R1", cls: "col-r", type: "ranged" },
+        { slot: "R2", cls: "col-r", type: "ranged" },
       ];
 
       const JOB_OPTIONS = {
-        tank: [
-          ["PLD", "Paladin"],
-          ["WAR", "Warrior"],
-          ["DRK", "Dark Knight"],
-          ["GNB", "Gunbreaker"],
-        ],
-        healer: [
-          ["WHM", "White Mage"],
-          ["SCH", "Scholar"],
-          ["AST", "Astrologian"],
-          ["SGE", "Sage"],
-        ],
-        melee: [
-          ["DRG", "Dragoon"],
-          ["MNK", "Monk"],
-          ["SAM", "Samurai"],
-          ["RPR", "Reaper"],
-          ["VPR", "Viper"],
-        ],
-        ranged: [
-          ["BRD", "Bard"],
-          ["MCH", "Machinist"],
-          ["DNC", "Dancer"],
-          ["BLM", "Black Mage"],
-          ["SMN", "Summoner"],
-          ["RDM", "Red Mage"],
-          ["PCT", "Pictomancer"],
-        ],
+        tank: {
+          icon: "../../images/icons/roletank.png",
+          jobs: [
+            ["PLD", "Paladin",    "../../images/icons/pld.png"],
+            ["WAR", "Warrior",    "../../images/icons/war.png"],
+            ["DRK", "Dark Knight","../../images/icons/drk.png"],
+            ["GNB", "Gunbreaker", "../../images/icons/gnb.png"],
+          ],
+        },
+        healer: {
+          icon: "../../images/icons/rolehealer.png",
+          jobs: [
+            ["WHM", "White Mage",   "../../images/icons/whm.png"],
+            ["SCH", "Scholar",      "../../images/icons/sch.png"],
+            ["AST", "Astrologian",  "../../images/icons/ast.png"],
+            ["SGE", "Sage",         "../../images/icons/sge.png"],
+          ],
+        },
+        melee: {
+          icon: "../../images/icons/roledeeps.png",
+          jobs: [
+            ["DRG", "Dragoon", "../../images/icons/drg.png"],
+            ["MNK", "Monk",    "../../images/icons/mnk.png"],
+            ["SAM", "Samurai", "../../images/icons/sam.png"],
+            ["RPR", "Reaper",  "../../images/icons/rpr.png"],
+            ["VPR", "Viper",   "../../images/icons/vpr.png"],
+          ],
+        },
+        ranged: {
+          icon: "../../images/icons/roledeeps.png",
+          jobs: [
+            ["BRD", "Bard",        "../../images/icons/_brd.png"],
+            ["MCH", "Machinist",   "../../images/icons/mch.png"],
+            ["DNC", "Dancer",      "../../images/icons/dnc.png"],
+            ["BLM", "Black Mage",  "../../images/icons/blm.png"],
+            ["SMN", "Summoner",    "../../images/icons/smn.png"],
+            ["RDM", "Red Mage",    "../../images/icons/rdm.png"],
+            ["PCT", "Pictomancer", "../../images/icons/pct.png"],
+          ],
+        },
       };
+
+      // ─────────────────────────────────────────────
+      // CUSTOM DROPDOWN LOGIC
+      // ─────────────────────────────────────────────
+      let activeDropdown = null;
+
+      function openCustomSelect(wrap) {
+        const trigger = wrap.querySelector(".cs-trigger");
+        const dropdown = wrap.querySelector(".cs-dropdown");
+
+        // Close any other open dropdown
+        if (activeDropdown && activeDropdown !== wrap) {
+          activeDropdown.querySelector(".cs-trigger").classList.remove("open");
+          activeDropdown.querySelector(".cs-dropdown").classList.remove("open");
+        }
+
+        const isOpen = dropdown.classList.contains("open");
+        if (isOpen) {
+          trigger.classList.remove("open");
+          dropdown.classList.remove("open");
+          activeDropdown = null;
+          return;
+        }
+
+        // Position the dropdown relative to the trigger
+        const rect = trigger.getBoundingClientRect();
+        dropdown.style.top = (rect.bottom + 4) + "px";
+        dropdown.style.left = rect.left + "px";
+
+        trigger.classList.add("open");
+        dropdown.classList.add("open");
+        activeDropdown = wrap;
+      }
+
+      function selectCustomOption(wrap, value, label, jobIcon) {
+        const trigger = wrap.querySelector(".cs-trigger");
+        const dropdown = wrap.querySelector(".cs-dropdown");
+        const hiddenSelect = wrap.querySelector("select");
+        const icon = jobIcon || wrap.dataset.icon;
+
+        // Update trigger display
+        trigger.querySelector(".cs-label").textContent = label;
+        trigger.querySelector("img").src = icon;
+
+        // Mark selected option
+        dropdown.querySelectorAll(".cs-option").forEach(opt => {
+          opt.classList.toggle("selected", opt.dataset.value === value);
+        });
+
+        // Sync hidden select and fire changeJob
+        hiddenSelect.value = value;
+        changeJob(hiddenSelect);
+
+        // Close
+        trigger.classList.remove("open");
+        dropdown.classList.remove("open");
+        activeDropdown = null;
+      }
+
+      // Close dropdown when clicking outside
+      document.addEventListener("click", (e) => {
+        if (activeDropdown && !activeDropdown.contains(e.target)) {
+          activeDropdown.querySelector(".cs-trigger").classList.remove("open");
+          activeDropdown.querySelector(".cs-dropdown").classList.remove("open");
+          activeDropdown = null;
+        }
+      });
 
       function buildHeader(trId, placeholders) {
         const tr = document.getElementById(trId);
         tr.innerHTML =
           `<th class="col-time">Time</th><th class="col-mech">Mechanic</th>` +
           HEADER_COLS.map((col) => {
-            const opts = JOB_OPTIONS[col.type]
+            const role = JOB_OPTIONS[col.type];
+            const icon = role.icon;
+            const placeholder = placeholders[col.slot];
+
+            const optionsHtml = role.jobs
+              .map(([v, l, jobIcon]) => `
+                <div class="cs-option" data-value="${v}" data-icon="${jobIcon}" onclick="selectCustomOption(this.closest('.cs-wrap'),'${v}','${l}','${jobIcon}')">
+                  <img src="${jobIcon}" alt="" />${l}
+                </div>`)
+              .join("");
+
+            // Hidden native select kept in sync for roledata.js compatibility
+            const hiddenOpts = role.jobs
               .map(([v, l]) => `<option value="${v}">${l}</option>`)
               .join("");
+
             return `<th class="${col.cls}">
-        <img class="header-icon" src="${col.icon}" alt="${col.alt}" />
-        <select class="job-select" data-slot="${col.slot}" onchange="changeJob(this)">
-          <option value="">${placeholders[col.slot]}</option>
-          ${opts}
-        </select>
-      </th>`;
+              <div class="cs-wrap" data-slot="${col.slot}" data-icon="${icon}">
+                <div class="cs-trigger" onclick="openCustomSelect(this.closest('.cs-wrap'))">
+                  <img src="${icon}" alt="" />
+                  <span class="cs-label">${placeholder}</span>
+                  <span class="cs-arrow">▾</span>
+                </div>
+                <div class="cs-dropdown">
+                  <div class="cs-placeholder" onclick="selectCustomOption(this.closest('.cs-wrap'),'','${placeholder}')">${placeholder}</div>
+                  ${optionsHtml}
+                </div>
+                <select hidden class="job-select" data-slot="${col.slot}" onchange="changeJob(this)">
+                  <option value=""></option>
+                  ${hiddenOpts}
+                </select>
+              </div>
+            </th>`;
           }).join("");
 
-        // Restore selections if jobs were already picked (e.g. after tab switch)
+        // Restore selections
         HEADER_COLS.forEach((col) => {
           const val = PARTY_COMPOSITION[col.slot];
-          if (val)
-            tr.querySelector(`select[data-slot="${col.slot}"]`).value = val;
+          if (val) {
+            const wrap = tr.querySelector(`.cs-wrap[data-slot="${col.slot}"]`);
+            const role = JOB_OPTIONS[col.type];
+            const match = role.jobs.find(([v]) => v === val);
+            if (match && wrap) selectCustomOption(wrap, match[0], match[1], match[2]);
+          }
         });
       }
 
@@ -1095,22 +1395,104 @@
         document.getElementById("p2-body").innerHTML = P2.map((r) =>
           renderRow(...r),
         ).join("");
+        rerenderCheatsheet();
       }
 
       // ─────────────────────────────────────────────
       // INIT
       // ─────────────────────────────────────────────
+      const SLOT_LABELS = {
+        T1: "MT", T2: "OT", H1: "H1", H2: "H2",
+        M1: "M1", M2: "M2", R1: "R1", R2: "R2",
+      };
+      const SLOT_PILL_CLS = {
+        T1: "pill-t", T2: "pill-t",
+        H1: "pill-h", H2: "pill-h",
+        M1: "pill-m", M2: "pill-m",
+        R1: "pill-r", R2: "pill-r",
+      };
+      // slot index in data arrays (0=time,1=mech,2=T1,3=T2,4=H1,5=H2,6=M1,7=M2,8=R1,9=R2)
+      const SLOT_INDEX = {
+        T1:2, T2:3, H1:4, H2:5, M1:6, M2:7, R1:8, R2:9,
+      };
+
+      let csActiveSlot = null;
+
+      function buildCheatsheetSlotPicker() {
+        const picker = document.getElementById("cs-slot-picker");
+        picker.innerHTML = HEADER_COLS.map(col => `
+          <button class="cs-slot-btn" data-slot="${col.slot}" onclick="selectCheatsheetSlot('${col.slot}')">
+            ${SLOT_LABELS[col.slot]}
+          </button>`).join("");
+      }
+
+      function selectCheatsheetSlot(slot) {
+        csActiveSlot = slot;
+
+        // Update slot button active state
+        document.querySelectorAll(".cs-slot-btn").forEach(btn => {
+          btn.classList.toggle("active", btn.dataset.slot === slot);
+        });
+
+        // Show job info
+        const jobInfo = document.getElementById("cs-sheet-job-info");
+        const jobVal = PARTY_COMPOSITION[slot];
+        if (jobVal) {
+          const col = HEADER_COLS.find(c => c.slot === slot);
+          const role = JOB_OPTIONS[col.type];
+          const match = role.jobs.find(([v]) => v === jobVal);
+          if (match) {
+            jobInfo.innerHTML = `<img src="${match[2]}" alt="${match[1]}" />${match[1]}`;
+          } else {
+            jobInfo.innerHTML = "";
+          }
+        } else {
+          jobInfo.innerHTML = `<span style="color:var(--overlay0);font-size:13px">No job selected for this slot</span>`;
+        }
+
+        renderCheatsheet(slot);
+      }
+
+      function renderCheatsheet(slot) {
+        const idx = SLOT_INDEX[slot];
+
+        document.getElementById("cs-sheet-no-selection").style.display = "none";
+        document.getElementById("cs-sheet-content").style.display = "block";
+
+        [["cs-p1-rows", P1], ["cs-p2-rows", P2]].forEach(([id, data]) => {
+          const container = document.getElementById(id);
+          const rows = data.filter(r => r[idx]);
+          if (!rows.length) {
+            container.innerHTML = `<div style="color:var(--overlay0);font-size:12px;padding:8px 0">Nothing assigned.</div>`;
+            return;
+          }
+          container.innerHTML = rows.map(r => {
+            const mits = r[idx].split("+").map(m => m.trim());
+          const role = COL_ROLES[COL_SLOTS.indexOf(slot)];
+          const mitsHtml = mits.map(raw => {
+              const resolved = resolveAbility(raw, slot);
+              if (!resolved) return '';
+              const cls = isPersonalAbility(resolved) ? 'pill-personal' : ROLE_PILL[role];
+              const invuln = INVULN_NAMES.has(resolved.toLowerCase()) ? 'pill-invuln' : '';
+              return `<div class="cs-row-mit pill ${cls} ${invuln}">${resolved}</div>`;
+            }).filter(Boolean).join("");
+            return `
+              <div class="cs-row">
+                <div class="cs-row-time">${r[0]}</div>
+                <div class="cs-row-mech">${r[1]}</div>
+                <div class="cs-row-mits">${mitsHtml}</div>
+              </div>`;
+          }).join("");
+        });
+      }
+
+      function rerenderCheatsheet() {
+        if (csActiveSlot) selectCheatsheetSlot(csActiveSlot);
+      }
+
+      buildCheatsheetSlotPicker();
+
       buildHeader("p1-header", {
-        T1: "Select MT",
-        T2: "Select OT",
-        H1: "Select H1",
-        H2: "Select H2",
-        M1: "Select M1",
-        M2: "Select M2",
-        R1: "Select R1",
-        R2: "Select R2",
-      });
-      buildHeader("p2-header", {
         T1: "Select MT",
         T2: "Select OT",
         H1: "Select H1",

@@ -73,10 +73,10 @@ const GENERIC_ABILITIES = {
 
   // ── 90s PERSONAL MIT (also labelled "40%" in some sheets) ──
   '90s': {
-    PLD: 'Guardian',
-    WAR: 'Damnation',
-    DRK: 'Shadowed Vigil',
-    GNB: 'Great Nebula',
+    PLD: 'Bulwark',
+    WAR: 'Thrill of Battle',
+    DRK: 'Dark Mind',
+    GNB: 'Camouflage',
   },
   '40%': {
     PLD: 'Guardian',
