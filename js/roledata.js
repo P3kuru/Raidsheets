@@ -54,7 +54,7 @@ const GENERIC_ABILITIES = {
     SGE: 'Holos',
     // Phys Ranged
     BRD: 'Troubadour',
-    MCH: {'Tactician','Dismantle'},
+    MCH: 'Tactician',
     DNC: 'Shield Samba',
     // Casters — no party mit
     BLM: null,
