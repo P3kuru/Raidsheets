@@ -258,7 +258,7 @@ const HEADER_COLS = [
 // ─────────────────────────────────────────────
 const JOB_OPTIONS = {
   tank: {
-    icon: '../../images/icons/roletank.png',
+    icon: '../images/icons/roletank.png',
     jobs: [
       ['PLD', 'Paladin',     '../images/icons/pld.png'],
       ['WAR', 'Warrior',     '../images/icons/war.png'],
@@ -267,7 +267,7 @@ const JOB_OPTIONS = {
     ],
   },
   healer: {
-    icon: '../../images/icons/rolehealer.png',
+    icon: '../images/icons/rolehealer.png',
     jobs: [
       ['WHM', 'White Mage',  '../images/icons/whm.png'],
       ['SCH', 'Scholar',     '../images/icons/sch.png'],
@@ -276,7 +276,7 @@ const JOB_OPTIONS = {
     ],
   },
   melee: {
-    icon: '../../images/icons/roledeeps.png',
+    icon: '../images/icons/roledeeps.png',
     jobs: [
       ['DRG', 'Dragoon', '../images/icons/drg.png'],
       ['MNK', 'Monk',    '../images/icons/mnk.png'],
@@ -286,7 +286,7 @@ const JOB_OPTIONS = {
     ],
   },
   ranged: {
-    icon: '../../images/icons/roledeeps.png',
+    icon: '../images/icons/roledeeps.png',
     jobs: [
       ['BRD', 'Bard',        '../images/icons/brd.png'],
       ['MCH', 'Machinist',   '../images/icons/mch.png'],
