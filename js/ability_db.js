@@ -188,6 +188,7 @@ const ABILITY_DB = {
   'd_feint': { id: 'PRTY', p:0, ALL:'Feint'                                                                                          },
   'd_addle': { id: 'PRTY', p:0, ALL:'Addle'                                                                                          },
   'd_mit':   { id: 'DMIT', p:0, MNK:'Mantra', BRD:'Troubadour', MCH:'Tactician', DNC:'Shield Samba', RDM:'Magick Barrier', PCT:'Tempera Grassa' },
+  'd_mit2':  { id: 'DMIT2', p:0, MCH:'Dismantle' },
 };
 
 
