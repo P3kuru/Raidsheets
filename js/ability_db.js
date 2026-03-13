@@ -1,21 +1,5 @@
-// ═══════════════════════════════════════════════════════════════
-//  ability_db.js — The Brain
-//  Shared ability database for all DYM fight sheets.
-//  Also contains UI config (HEADER_COLS, JOB_OPTIONS) shared by
-//  every 8-man fight template.
-// ═══════════════════════════════════════════════════════════════
+// Ability database to resolve ability IDs to display names, plus related metadata like personal vs. party, and pill colors.
 
-// ─────────────────────────────────────────────
-// PILL COLOR SYSTEM
-//
-// Role colors are the default — pills inherit the color of the
-// column they appear in. An optional `col` on an entry overrides
-// this for that specific ability regardless of slot.
-//
-// Values are CSS variable names (e.g. '--blue').
-// The HTML applies them as: style="--c: var(--blue)"
-// CSS then uses: color-mix(in srgb, var(--c) 18%, transparent)
-// ─────────────────────────────────────────────
 const ROLE_COLORS = {
   t: '--blue',    // Tank columns  (T1/T2)
   h: '--green',   // Healer columns (H1/H2)
@@ -33,173 +17,224 @@ function slotRole(slot, job) {
   return CASTER_JOBS.has(job) ? 'c' : 'r';
 }
 
-
-// ─────────────────────────────────────────────
 // ABILITY DATABASE
-// id:   identifier (kept for debugging/future use)
-// p:    1 = personal mit, 0 = group/party mit
-// col:  (optional) color override for party pills
-// pcol: (optional) color override for personal pills
-//       if absent, inherits col or slot's role color
-// ALL:  fallback name if no job-specific key
-// ─────────────────────────────────────────────
 const ABILITY_DB = {
 
-  // ── Tank Personal ────────────────────────────
-  't_inv':   { id: 'INV',  p:1, pcol:'--peach', PLD:'Hallowed Ground',    WAR:'Holmgang',          DRK:'Living Dead',        GNB:'Superbolide'       },
-  't_40':    { id: 'BIG',  p:1, pcol:'--peach', PLD:'Guardian',           WAR:'Damnation',         DRK:'Shadowed Vigil',     GNB:'Great Nebula'      },
-  't_90s':   { id: 'MED',  p:1, pcol:'--peach', PLD:'Bulwark',            WAR:'Thrill of Battle',  DRK:'Dark Mind',          GNB:'Camouflage'        },
-  't_short': { id: 'SHT',  p:1, pcol:'--peach', PLD:'Holy Sheltron',      WAR:'Bloodwhetting',     DRK:'The Blackest Night', GNB:'Heart of Corundum' },
-  't_ramp':  { id: 'RAMP', p:1, pcol:'--peach', ALL:'Rampart'                                                                                        },
+  // Tank Shared 
+  'tank_rep':       { id: 'T_REP',    p: 1, ALL: 'Reprisal' },
+  'tank_ramp':      { id: 'T_RAMP',   p: 1, ALL: 'Rampart' },
+  'tank_arms':      { id: 'T_AL',     p: 1, ALL: "Arm's Length" },
+  'tank_low':       { id: 'T_LOW',    p: 1, ALL: 'Low Blow' },
+  'tank_int':       { id: 'T_INT',    p: 1, ALL: 'Interject' },
 
-  // ── Tank Party ───────────────────────────────
-  't_rep':   { id: 'PRTY', p:0, ALL:'Reprisal'                                                                                       },
-  't_pmit':  { id: 'PRTY', p:0, PLD:'Divine Veil',        WAR:'Shake It Off',      DRK:'Dark Missionary',    GNB:'Heart of Light'    },
+  // Paladin
+  'pld_hallowed':   { id: 'PLD_INV',  job: 'PLD', p: 1, ALL: 'Hallowed Ground' },
+  'pld_guardian':   { id: 'PLD_40',   job: 'PLD', p: 1, ALL: 'Guardian' }, 
+  'pld_bulwark':    { id: 'PLD_BUL',  job: 'PLD', p: 1, ALL: 'Bulwark' },
+  'pld_sheltron':   { id: 'PLD_SHEL', job: 'PLD', p: 1, ALL: 'Holy Sheltron' },
+  'pld_veil':       { id: 'PLD_VEIL', job: 'PLD', p: 1, ALL: 'Divine Veil' },
+  'pld_passage':    { id: 'PLD_PASS', job: 'PLD', p: 1, ALL: 'Passage of Arms' },
+  'pld_inter':      { id: 'PLD_INT',  job: 'PLD', p: 1, ALL: 'Intervention' },
+  'pld_cover':      { id: 'PLD_COV',  job: 'PLD', p: 1, ALL: 'Cover' },
+  'pld_clemency':   { id: 'PLD_CLEM', job: 'PLD', p: 1, ALL: 'Clemency' },
 
+  // Warrior
+  'war_holm':       { id: 'WAR_INV',  job: 'WAR', p: 1, ALL: 'Holmgang' },
+  'war_damnation':  { id: 'WAR_40',   job: 'WAR', p: 1, ALL: 'Damnation' },
+  'war_thrall':     { id: 'WAR_THR',  job: 'WAR', p: 1, ALL: 'Thrill of Battle' },
+  'war_whetting':   { id: 'WAR_BW',   job: 'WAR', p: 1, ALL: 'Bloodwhetting' },
+  'war_equi':       { id: 'WAR_EQU',  job: 'WAR', p: 1, ALL: 'Equilibrium' },
+  'war_shake':      { id: 'WAR_SHK',  job: 'WAR', p: 1, ALL: 'Shake It Off' },
+  'war_nascent':    { id: 'WAR_NAS',  job: 'WAR', p: 1, ALL: 'Nascent Flash' },
 
-  // ── Special (explicit color overrides) ───────
-  'kitchen_sink': { id: 'SINK', p:1, col: '--red', ALL:'Kitchen Sink'                                                                },
+  // Dark Knight
+  'drk_ld':         { id: 'DRK_INV',  job: 'DRK', p: 1, ALL: 'Living Dead' },
+  'drk_shadowed':   { id: 'DRK_40',   job: 'DRK', p: 1, ALL: 'Shadowed Vigil' },
+  'drk_oblation':   { id: 'DRK_OBL',  job: 'DRK', p: 1, ALL: 'Oblation' },
+  'drk_black':      { id: 'DRK_TBN',  job: 'DRK', p: 1, ALL: 'The Black Night' },
+  'drk_mind':       { id: 'DRK_DM',   job: 'DRK', p: 1, ALL: 'Dark Mind' },
+  'drk_mission':    { id: 'DRK_MSN',  job: 'DRK', p: 1, ALL: 'Dark Missionary' },
 
-  // ── WHM Unique — Personal Heals ──────────────
-  'whm_cure':              { id: 'WHM_CURE',    p:1, ALL:'Cure'              },
-  'whm_cure2':             { id: 'WHM_CURE2',   p:1, ALL:'Cure II'           },
-  'whm_cure3':             { id: 'WHM_CURE3',   p:0, ALL:'Cure III'          },
-  'whm_regen':             { id: 'WHM_REGEN',   p:1, ALL:'Regen'             },
-  'whm_raise':             { id: 'WHM_RAISE',   p:1, ALL:'Raise'             },
-  'whm_afflatus_solace':   { id: 'WHM_SOLACE',  p:1, ALL:'Afflatus Solace'   },
-  'whm_benediction':       { id: 'WHM_BENE',    p:1, ALL:'Benediction'       },
-  'whm_tetragrammaton':    { id: 'WHM_TETRA',   p:1, ALL:'Tetragrammaton'    },
-  'whm_divine_benison':    { id: 'WHM_BENIS',   p:1, ALL:'Divine Benison'    },
-  'whm_aquaveil':          { id: 'WHM_AQUA',    p:1, ALL:'Aquaveil'          },
+  // Gunbreaker
+  'gnb_bolide':     { id: 'GNB_INV',  job: 'GNB', p: 1, ALL: 'Superbolide' },
+  'gnb_great':      { id: 'GNB_40',   job: 'GNB', p: 1, ALL: 'Great Nebulae' },
+  'gnb_camo':       { id: 'GNB_CAM',  job: 'GNB', p: 1, ALL: 'Camouflage' },
+  'gnb_heart':      { id: 'GNB_HOC',  job: 'GNB', p: 1, ALL: 'Heart of Corundum' },
+  'gnb_aurora':     { id: 'GNB_AUR',  job: 'GNB', p: 1, ALL: 'Aurora' },
+  'gnb_light':      { id: 'GNB_LGT',  job: 'GNB', p: 1, ALL: 'Heart of Light' },
 
-  // ── WHM Unique — Party Heals & Mits ──────────
-  'whm_medica':            { id: 'WHM_MED',     p:0, ALL:'Medica'            },
-  'whm_medica2':           { id: 'WHM_MED2',    p:0, ALL:'Medica II'         },
-  'whm_medica3':           { id: 'WHM_MED3',    p:0, ALL:'Medica III'        },
-  'whm_afflatus_rapture':  { id: 'WHM_RAPT',    p:0, ALL:'Afflatus Rapture'  },
-  'whm_asylum':            { id: 'WHM_ASYL',    p:0, ALL:'Asylum'            },
-  'whm_plenary_indulgence':{ id: 'WHM_PLEN',    p:0, ALL:'Plenary Indulgence'},
-  'whm_temperance':        { id: 'WHM_TEMP',    p:0, ALL:'Temperance'        },
-  'whm_liturgy_of_the_bell':{ id:'WHM_LOTB',    p:0, ALL:'Liturgy of the Bell'},
-  'whm_divine_caress':     { id: 'WHM_DCAR',    p:0, ALL:'Divine Caress'     },
+  // White Mage
+  'whm_cure':   { id: 'WHM_CURE',   job:'WHM', p:1, ALL:'Cure'              },
+  'whm_cure2':  { id: 'WHM_CURE2',  job:'WHM', p:1, ALL:'Cure II'           },
+  'whm_cure3':  { id: 'WHM_CURE3',  job:'WHM', p:1, ALL:'Cure III'          },
+  'whm_regen':  { id: 'WHM_REGEN',  job:'WHM', p:1, ALL:'Regen'             },
+  'whm_raise':  { id: 'WHM_RAISE',  job:'WHM', p:1, ALL:'Raise'             },
+  'whm_solace': { id: 'WHM_SOLACE', job:'WHM', p:1, ALL:'Afflatus Solace'   },
+  'whm_bene':   { id: 'WHM_BENE',   job:'WHM', p:1, ALL:'Benediction'       },
+  'whm_tetra':  { id: 'WHM_TETRA',  job:'WHM', p:1, ALL:'Tetragrammaton'    },
+  'whm_benis':  { id: 'WHM_BENIS',  job:'WHM', p:1, ALL:'Divine Benison'    },
+  'whm_aqua':   { id: 'WHM_AQUA',   job:'WHM', p:1, ALL:'Aquaveil'          },
+  'whm_med':    { id: 'WHM_MED',    job:'WHM', p:1, ALL:'Medica'            },
+  'whm_med2':   { id: 'WHM_MED2',   job:'WHM', p:1, ALL:'Medica II'         },
+  'whm_med3':   { id: 'WHM_MED3',   job:'WHM', p:1, ALL:'Medica III'        },
+  'whm_rapt':   { id: 'WHM_RAPT',   job:'WHM', p:1, ALL:'Afflatus Rapture'  },
+  'whm_asyl':   { id: 'WHM_ASYL',   job:'WHM', p:1, ALL:'Asylum'            },
+  'whm_plen':   { id: 'WHM_PLEN',   job:'WHM', p:1, ALL:'Plenary Indulgence'},
+  'whm_temp':   { id: 'WHM_TEMP',   job:'WHM', p:1, ALL:'Temperance'        },
+  'whm_lotb':   { id: 'WHM_LOTB',   job:'WHM', p:1, ALL:'Liturgy of the Bell'},
+  'whm_dcar':   { id: 'WHM_DCAR',   job:'WHM', p:1, ALL:'Divine Caress'     },
+  'whm_pom':    { id: 'WHM_POM',    job:'WHM', p:1, ALL:'Presence of Mind'  },
+  'whm_thin':   { id: 'WHM_THIN',   job:'WHM', p:1, ALL:'Thin Air'          },
+  'whm_dash':   { id: 'WHM_DASH',   job:'WHM', p:1, ALL:'Aetherial Shift'   },
 
-  // ── WHM Unique — Self Buffs & Utility ────────
-  'whm_presence_of_mind':  { id: 'WHM_POM',     p:1, ALL:'Presence of Mind'  },
-  'whm_thin_air':          { id: 'WHM_THIN',    p:1, ALL:'Thin Air'          },
-  'whm_aetherial_shift':   { id: 'WHM_DASH',    p:1, ALL:'Aetherial Shift'   },
+  // Scholar
+  'sch_phy':    { id: 'SCH_PHY',    job:'SCH', p:1, ALL:'Physick'            },
+  'sch_lust':   { id: 'SCH_LUST',   job:'SCH', p:1, ALL:'Lustrate'           },
+  'sch_excog':  { id: 'SCH_EXCOG',  job:'SCH', p:1, ALL:'Excogitation'       },
+  'sch_prot':   { id: 'SCH_PROT',   job:'SCH', p:1, ALL:'Protraction'        },
+  'sch_res':    { id: 'SCH_RES',    job:'SCH', p:1, ALL:'Resurrection'       },
+  'sch_adlo':   { id: 'SCH_ADLO',   job:'SCH', p:1, ALL:'Adloquium'          },
+  'sch_succ':   { id: 'SCH_SUCC',   job:'SCH', p:1, ALL:'Succor'             },
+  'sch_conc':   { id: 'SCH_CONC',   job:'SCH', p:1, ALL:'Concitation'        },
+  'sch_whsp':   { id: 'SCH_WHSP',   job:'SCH', p:1, ALL:'Whispering Dawn'    },
+  'sch_feil':   { id: 'SCH_FEIL',   job:'SCH', p:1, ALL:'Fey Illumination'   },
+  'sch_soil':   { id: 'SCH_SOIL',   job:'SCH', p:1, ALL:'Sacred Soil'        },
+  'sch_indo':   { id: 'SCH_INDO',   job:'SCH', p:1, ALL:'Indomitability'     },
+  'sch_depl':   { id: 'SCH_DEPL',   job:'SCH', p:1, ALL:'Deployment Tactics' },
+  'sch_feyb':   { id: 'SCH_FEYB',   job:'SCH', p:1, ALL:'Fey Blessing'       },
+  'sch_cons':   { id: 'SCH_CONS',   job:'SCH', p:1, ALL:'Consolation'        },
+  'sch_expe':   { id: 'SCH_EXPE',   job:'SCH', p:1, ALL:'Expedient'          },
+  'sch_sera':   { id: 'SCH_SERA',   job:'SCH', p:1, ALL:'Seraphism'          },
+  'sch_eos':    { id: 'SCH_EOS',    job:'SCH', p:1, ALL:'Summon Eos'         },
+  'sch_aeth':   { id: 'SCH_AETH',   job:'SCH', p:1, ALL:'Aetherflow'         },
+  'sch_diss':   { id: 'SCH_DISS',   job:'SCH', p:1, ALL:'Dissipation'        },
+  'sch_emtc':   { id: 'SCH_EMTC',   job:'SCH', p:1, ALL:'Emergency Tactics'  },
+  'sch_reci':   { id: 'SCH_RECI',   job:'SCH', p:1, ALL:'Recitation'         },
+  'sch_aetp':   { id: 'SCH_AETP',   job:'SCH', p:1, ALL:'Aetherpact'         },
+  'sch_srph':   { id: 'SCH_SRPH',   job:'SCH', p:1, ALL:'Summon Seraph'      },
 
-  // ── SCH Unique — Personal Heals ──────────────
-  'sch_physick':           { id: 'SCH_PHY',   p:1, ALL:'Physick'            },
-  'sch_lustrate':          { id: 'SCH_LUST',  p:1, ALL:'Lustrate'           },
-  'sch_excogitation':      { id: 'SCH_EXCOG', p:1, ALL:'Excogitation'       },
-  'sch_protraction':       { id: 'SCH_PROT',  p:1, ALL:'Protraction'        },
-  'sch_resurrection':      { id: 'SCH_RES',   p:1, ALL:'Resurrection'       },
+  // Astrologian
+  'ast_ben':    { id: 'AST_BEN',    job:'AST', p:1, ALL:'Benefic'                  },
+  'ast_ben2':   { id: 'AST_BEN2',   job:'AST', p:1, ALL:'Benefic II'               },
+  'ast_aben':   { id: 'AST_ABEN',   job:'AST', p:1, ALL:'Aspected Benefic'         },
+  'ast_ed':     { id: 'AST_ED',     job:'AST', p:1, ALL:'Essential Dignity'        },
+  'ast_ci':     { id: 'AST_CI',     job:'AST', p:1, ALL:'Celestial Intersection'   },
+  'ast_exal':   { id: 'AST_EXAL',   job:'AST', p:1, ALL:'Exaltation'               },
+  'ast_res':    { id: 'AST_RES',    job:'AST', p:1, ALL:'Ascend'                   },
+  'ast_hel':    { id: 'AST_HEL',    job:'AST', p:1, ALL:'Helios'                   },
+  'ast_ahel':   { id: 'AST_AHEL',   job:'AST', p:1, ALL:'Aspected Helios'          },
+  'ast_hcon':   { id: 'AST_HCON',   job:'AST', p:1, ALL:'Helios Conjunction'       },
+  'ast_cu':     { id: 'AST_CU',     job:'AST', p:1, ALL:'Collective Unconscious'   },
+  'ast_co':     { id: 'AST_CO',     job:'AST', p:1, ALL:'Celestial Opposition'     },
+  'ast_star':   { id: 'AST_STAR',   job:'AST', p:1, ALL:'Earthly Star'             },
+  'ast_horo':   { id: 'AST_HORO',   job:'AST', p:1, ALL:'Horoscope'                },
+  'ast_ns':     { id: 'AST_NS',     job:'AST', p:1, ALL:'Neutral Sect'             },
+  'ast_macro':  { id: 'AST_MACRO',  job:'AST', p:1, ALL:'Macrocosmos'              },
+  'ast_micro':  { id: 'AST_MICRO',  job:'AST', p:1, ALL:'Microcosmos'              },
+  'ast_sun':    { id: 'AST_SUN',    job:'AST', p:1, ALL:'Sun Sign'                 },
+  'ast_lady':   { id: 'AST_LADY',   job:'AST', p:1, ALL:'Lady of Crowns'           },
+  'ast_balance':{ id: 'AST_CARD',   job:'AST', p:1, ALL:'The Balance'              },
+  'ast_spear':  { id: 'AST_CARD',   job:'AST', p:1, ALL:'The Spear'                },
+  'ast_arrow':  { id: 'AST_CARD',   job:'AST', p:1, ALL:'The Arrow'                },
+  'ast_bole':   { id: 'AST_CARD',   job:'AST', p:1, ALL:'The Bole'                 },
+  'ast_spire':  { id: 'AST_CARD',   job:'AST', p:1, ALL:'The Spire'                },
+  'ast_ewer':   { id: 'AST_CARD',   job:'AST', p:1, ALL:'The Ewer'                 },
+  'ast_ls':     { id: 'AST_LS',     job:'AST', p:1, ALL:'Lightspeed'               },
+  'ast_div':    { id: 'AST_DIV',    job:'AST', p:1, ALL:'Divination'               },
+  'ast_syn':    { id: 'AST_SYN',    job:'AST', p:1, ALL:'Synastry'                 },
+  'ast_adraw':  { id: 'AST_ADRAW',  job:'AST', p:1, ALL:'Astral Draw'              },
+  'ast_udraw':  { id: 'AST_UDRAW',  job:'AST', p:1, ALL:'Umbral Draw'              },
 
-  // ── SCH Unique — Party Heals, Shields & Mits ─
-  'sch_adloquium':         { id: 'SCH_ADLO',  p:0, ALL:'Adloquium'          },
-  'sch_succor':            { id: 'SCH_SUCC',  p:0, ALL:'Succor'             },
-  'sch_concitation':       { id: 'SCH_CONC',  p:0, ALL:'Concitation'        },
-  'sch_whispering_dawn':   { id: 'SCH_WHSP',  p:0, ALL:'Whispering Dawn'    },
-  'sch_fey_illumination':  { id: 'SCH_FEIL',  p:0, ALL:'Fey Illumination'   },
-  'sch_sacred_soil':       { id: 'SCH_SOIL',  p:0, ALL:'Sacred Soil'        },
-  'sch_indomitability':    { id: 'SCH_INDO',  p:0, ALL:'Indomitability'     },
-  'sch_deployment_tactics':{ id: 'SCH_DEPL',  p:0, ALL:'Deployment Tactics' },
-  'sch_fey_blessing':      { id: 'SCH_FEYB',  p:0, ALL:'Fey Blessing'       },
-  'sch_consolation':       { id: 'SCH_CONS',  p:0, ALL:'Consolation'        },
-  'sch_expedient':         { id: 'SCH_EXPE',  p:0, ALL:'Expedient'          },
-  'sch_seraphism':         { id: 'SCH_SERA',  p:0, ALL:'Seraphism'          },
+  // Sage
+  'sge_diag':   { id: 'SGE_DIAG',   job:'SGE', p:1, ALL:'Diagnosis'              },
+  'sge_ediag':  { id: 'SGE_EDIAG',  job:'SGE', p:1, ALL:'Eukrasian Diagnosis'    },
+  'sge_druo':   { id: 'SGE_DRUO',   job:'SGE', p:1, ALL:'Druochole'              },
+  'sge_tauro':  { id: 'SGE_TAURO',  job:'SGE', p:1, ALL:'Taurochole'             },
+  'sge_haima':  { id: 'SGE_HAIMA',  job:'SGE', p:1, ALL:'Haima'                  },
+  'sge_kras':   { id: 'SGE_KRAS',   job:'SGE', p:1, ALL:'Krasis'                 },
+  'sge_res':    { id: 'SGE_RES',    job:'SGE', p:1, ALL:'Egeiro'                 },
+  'sge_prog':   { id: 'SGE_PROG',   job:'SGE', p:1, ALL:'Prognosis'              },
+  'sge_eprog':  { id: 'SGE_EPROG',  job:'SGE', p:1, ALL:'Eukrasian Prognosis II' },
+  'sge_phys':   { id: 'SGE_PHYS',   job:'SGE', p:1, ALL:'Physis II'              },
+  'sge_kera':   { id: 'SGE_KERA',   job:'SGE', p:1, ALL:'Kerachole'              },
+  'sge_ixoc':   { id: 'SGE_IXOC',   job:'SGE', p:1, ALL:'Ixochole'               },
+  'sge_peps':   { id: 'SGE_PEPS',   job:'SGE', p:1, ALL:'Pepsis'                 },
+  'sge_holos':  { id: 'SGE_HOLOS',  job:'SGE', p:1, ALL:'Holos'                  },
+  'sge_panh':   { id: 'SGE_PANH',   job:'SGE', p:1, ALL:'Panhaima'               },
+  'sge_phil':   { id: 'SGE_PHIL',   job:'SGE', p:1, ALL:'Philosophia'            },
+  'sge_kard':   { id: 'SGE_KARD',   job:'SGE', p:1, ALL:'Kardia'                 },
+  'sge_euk':    { id: 'SGE_EUK',    job:'SGE', p:1, ALL:'Eukrasia'               },
+  'sge_soter':  { id: 'SGE_SOTER',  job:'SGE', p:1, ALL:'Soteria'                },
+  'sge_zoe':    { id: 'SGE_ZOE',    job:'SGE', p:1, ALL:'Zoe'                    },
+  'sge_icar':   { id: 'SGE_ICAR',   job:'SGE', p:1, ALL:'Icarus'                 },
+  'sge_rhiz':   { id: 'SGE_RHIZ',   job:'SGE', p:1, ALL:'Rhizomata'              },
 
-  // ── SCH Unique — Self Buffs & Utility ────────
-  'sch_summon_eos':        { id: 'SCH_EOS',   p:1, ALL:'Summon Eos'         },
-  'sch_aetherflow':        { id: 'SCH_AETH',  p:1, ALL:'Aetherflow'         },
-  'sch_dissipation':       { id: 'SCH_DISS',  p:1, ALL:'Dissipation'        },
-  'sch_emergency_tactics': { id: 'SCH_EMTC',  p:1, ALL:'Emergency Tactics'  },
-  'sch_recitation':        { id: 'SCH_RECI',  p:1, ALL:'Recitation'         },
-  'sch_aetherpact':        { id: 'SCH_AETP',  p:1, ALL:'Aetherpact'         },
-  'sch_summon_seraph':     { id: 'SCH_SRPH',  p:1, ALL:'Summon Seraph'      },
+  // DPS Shared
+  'melee_feint':    { id: 'M_FEINT', p: 1, ALL: 'Feint' },
+  'cast_addle':     { id: 'C_ADDLE', p: 1, ALL: 'Addle' },
 
-  // ── AST Unique — Personal Heals ──────────────
-  'ast_benefic':               { id: 'AST_BEN',   p:1, ALL:'Benefic'                  },
-  'ast_benefic2':              { id: 'AST_BEN2',  p:1, ALL:'Benefic II'               },
-  'ast_aspected_benefic':      { id: 'AST_ABEN',  p:1, ALL:'Aspected Benefic'         },
-  'ast_essential_dignity':     { id: 'AST_ED',    p:1, ALL:'Essential Dignity'        },
-  'ast_celestial_intersection':{ id: 'AST_CI',    p:1, ALL:'Celestial Intersection'   },
-  'ast_exaltation':            { id: 'AST_EXAL',  p:1, ALL:'Exaltation'              },
-  'ast_ascend':                { id: 'AST_RES',   p:1, ALL:'Ascend'                   },
+   // Monk 
+  'mnk_mantra':     { id: 'MNK_MAN', job: 'MNK', p: 1, ALL: 'Mantra' },
+  'mnk_brother':    { id: 'MNK_BRO', job: 'MNK', p: 1, ALL: 'Brotherhood' },
+  'mnk_riddle':     { id: 'MNK_RE',  job: 'MNK', p: 1, ALL: 'Riddle of Earth' },
 
-  // ── AST Unique — Party Heals & Mits ──────────
-  'ast_helios':                { id: 'AST_HEL',   p:0, ALL:'Helios'                   },
-  'ast_aspected_helios':       { id: 'AST_AHEL',  p:0, ALL:'Aspected Helios'          },
-  'ast_helios_conjunction':    { id: 'AST_HCON',  p:0, ALL:'Helios Conjunction'       },
-  'ast_collective_unconscious':{ id: 'AST_CU',    p:0, ALL:'Collective Unconscious'   },
-  'ast_celestial_opposition':  { id: 'AST_CO',    p:0, ALL:'Celestial Opposition'     },
-  'ast_earthly_star':          { id: 'AST_STAR',  p:0, ALL:'Earthly Star'             },
-  'ast_horoscope':             { id: 'AST_HORO',  p:0, ALL:'Horoscope'                },
-  'ast_neutral_sect':          { id: 'AST_NS',    p:0, ALL:'Neutral Sect'             },
-  'ast_macrocosmos':           { id: 'AST_MACRO', p:0, ALL:'Macrocosmos'              },
-  'ast_microcosmos':           { id: 'AST_MICRO', p:0, ALL:'Microcosmos'              },
-  'ast_sun_sign':              { id: 'AST_SUN',   p:0, ALL:'Sun Sign'                 },
-  'ast_lady_of_crowns':        { id: 'AST_LADY',  p:0, ALL:'Lady of Crowns'           },
+  // Dragoon
+  'drg_litany':     { id: 'DRG_LIT', job: 'DRG', p: 1, ALL: 'Battle Litany' },
+  'drg_sight':      { id: 'DRG_DS',  job: 'DRG', p: 1, ALL: 'Dragon Sight' },
 
-  // ── AST Unique — Cards ────────────────────────
-  'ast_the_balance':           { id: 'AST_CARD',  p:1, ALL:'The Balance'              },
-  'ast_the_spear':             { id: 'AST_CARD',  p:1, ALL:'The Spear'                },
-  'ast_the_arrow':             { id: 'AST_CARD',  p:0, ALL:'The Arrow'                },
-  'ast_the_bole':              { id: 'AST_CARD',  p:0, ALL:'The Bole'                 },
-  'ast_the_spire':             { id: 'AST_CARD',  p:1, ALL:'The Spire'                },
-  'ast_the_ewer':              { id: 'AST_CARD',  p:1, ALL:'The Ewer'                 },
+  // Ninja
+  'nin_shade':      { id: 'NIN_SHA', job: 'NIN', p: 1, ALL: 'Shade Shift' },
+  'nin_tenri':      { id: 'NIN_TEN', job: 'NIN', p: 1, ALL: 'Tenri Jindo' },
 
-  // ── AST Unique — Self Buffs & Utility ────────
-  'ast_lightspeed':            { id: 'AST_LS',    p:1, ALL:'Lightspeed'               },
-  'ast_divination':            { id: 'AST_DIV',   p:0, ALL:'Divination'               },
-  'ast_synastry':              { id: 'AST_SYN',   p:1, ALL:'Synastry'                 },
-  'ast_astral_draw':           { id: 'AST_DRAW',  p:1, ALL:'Astral Draw'              },
-  'ast_umbral_draw':           { id: 'AST_DRAW',  p:1, ALL:'Umbral Draw'              },
+  // Samurai
+  'sam_third':      { id: 'SAM_TE',  job: 'SAM', p: 1, ALL: 'Third Eye' },
 
-  // ── SGE Unique — Personal Heals & Shields ────
-  'sge_diagnosis':           { id: 'SGE_DIAG',  p:1, ALL:'Diagnosis'              },
-  'sge_eukrasian_diagnosis': { id: 'SGE_EDIAG', p:1, ALL:'Eukrasian Diagnosis'    },
-  'sge_druochole':           { id: 'SGE_DRUO',  p:1, ALL:'Druochole'              },
-  'sge_taurochole':          { id: 'SGE_TAURO', p:1, ALL:'Taurochole'             },
-  'sge_haima':               { id: 'SGE_HAIMA', p:1, ALL:'Haima'                  },
-  'sge_krasis':              { id: 'SGE_KRAS',  p:1, ALL:'Krasis'                 },
-  'sge_egeiro':              { id: 'SGE_RES',   p:1, ALL:'Egeiro'                 },
+  // Reaper
+  'rpr_crest':      { id: 'RPR_ARC', job: 'RPR', p: 1, ALL: 'Arcane Crest' },
 
-  // ── SGE Unique — Party Heals, Shields & Mits ─
-  'sge_prognosis':           { id: 'SGE_PROG',  p:0, ALL:'Prognosis'              },
-  'sge_eukrasian_prognosis': { id: 'SGE_EPROG', p:0, ALL:'Eukrasian Prognosis II' },
-  'sge_physis':              { id: 'SGE_PHYS',  p:0, ALL:'Physis II'              },
-  'sge_kerachole':           { id: 'SGE_KERA',  p:0, ALL:'Kerachole'              },
-  'sge_ixochole':            { id: 'SGE_IXOC',  p:0, ALL:'Ixochole'               },
-  'sge_pepsis':              { id: 'SGE_PEPS',  p:0, ALL:'Pepsis'                 },
-  'sge_holos':               { id: 'SGE_HOLOS', p:0, ALL:'Holos'                  },
-  'sge_panhaima':            { id: 'SGE_PANH',  p:0, ALL:'Panhaima'               },
-  'sge_philosophia':         { id: 'SGE_PHIL',  p:0, ALL:'Philosophia'            },
+  // Viper
+  'vpr_shroud':     { id: 'VPR_SHR', job: 'VPR', p: 1, ALL: 'Hardened Shroud' },
 
-  // ── SGE Unique — Self Buffs & Utility ────────
-  'sge_kardia':              { id: 'SGE_KARD',  p:1, ALL:'Kardia'                 },
-  'sge_eukrasia':            { id: 'SGE_EUK',   p:1, ALL:'Eukrasia'               },
-  'sge_soteria':             { id: 'SGE_SOTER', p:1, ALL:'Soteria'                },
-  'sge_zoe':                 { id: 'SGE_ZOE',   p:1, ALL:'Zoe'                    },
-  'sge_icarus':              { id: 'SGE_ICAR',  p:1, ALL:'Icarus'                 },
-  'sge_rhizomata':           { id: 'SGE_RHIZ',  p:1, ALL:'Rhizomata'              },
+  // Bard
+  'brd_troub':      { id: 'BRD_TRO', job: 'BRD', p: 1, ALL: 'Troubadour' },
+  'brd_minne':      { id: 'BRD_MIN', job: 'BRD', p: 1, ALL: "Nature's Minne" },
+  'brd_paean':      { id: 'BRD_PAE', job: 'BRD', p: 1, ALL: "The Warden's Paean" },
 
-  // ── DPS ──────────────────────────────────────
-  'd_feint': { id: 'PRTY', p:0, ALL:'Feint'                                                                                          },
-  'd_addle': { id: 'PRTY', p:0, ALL:'Addle'                                                                                          },
-  'd_mit':   { id: 'DMIT', p:0, MNK:'Mantra', BRD:'Troubadour', MCH:'Tactician', DNC:'Shield Samba', RDM:'Magick Barrier', PCT:'Tempera Grassa' },
-  'd_mit2':  { id: 'DMIT2', p:0, MCH:'Dismantle' },
+  // Machinist
+  'mch_tact':       { id: 'MCH_TAC', job: 'MCH', p: 1, ALL: 'Tactician' },
+  'mch_dismantle':  { id: 'MCH_DIS', job: 'MCH', p: 1, ALL: 'Dismantle' },
+
+  // Dancer
+  'dnc_samba':      { id: 'DNC_SAM', job: 'DNC', p: 1, ALL: 'Shield Samba' },
+  'dnc_waltz':      { id: 'DNC_WLZ', job: 'DNC', p: 1, ALL: 'Curing Waltz' },
+  'dnc_improv':     { id: 'DNC_IMP', job: 'DNC', p: 1, ALL: 'Improvisation' },
+  'dnc_finish':     { id: 'DNC_FIN', job: 'DNC', p: 1, ALL: 'Finishing Move' },
+
+  // Black Mage
+  'blm_ward':       { id: 'BLM_MW',  job: 'BLM', p: 1, ALL: 'Manaward' },
+
+  // Summoner
+  'smn_aegis':      { id: 'SMN_AEG', job: 'SMN', p: 1, ALL: 'Radiant Aegis' },
+  'smn_lux':        { id: 'SMN_LUX', job: 'SMN', p: 1, ALL: 'Solar Bahamut (Lux)' },
+  'smn_swift':      { id: 'SMN_SWI', job: 'SMN', p: 1, ALL: 'Swiftcast' },
+
+  // Red Mage
+  'rdm_magick':     { id: 'RDM_MB',  job: 'RDM', p: 1, ALL: 'Magick Barrier' },
+  'rdm_verraise':   { id: 'RDM_REZ', job: 'RDM', p: 1, ALL: 'Verraise' },
+  'rdm_vheal':      { id: 'RDM_VHL', job: 'RDM', p: 1, ALL: 'Vercure' },
+
+  // Pictomancer
+  'pct_tempera':    { id: 'PCT_TEM', job: 'PCT', p: 1, ALL: 'Tempera Coat' },
+  'pct_gratias':    { id: 'PCT_GRA', job: 'PCT', p: 1, ALL: 'Tempera Gratias' },
+  'pct_starry':     { id: 'PCT_MUS', job: 'PCT', p: 1, ALL: 'Starry Muse' },
 };
 
-
-// ─────────────────────────────────────────────
-// ABILITY ENGINE
-// ─────────────────────────────────────────────
 const AbilityEngine = {
   resolve(uID, job, slot) {
     if (!uID) return null;
     const entry = ABILITY_DB[uID.toLowerCase().trim()];
     if (entry) {
+      if (entry.job && entry.job !== job) return null;
       const name = entry[job] || entry.ALL;
       if (!name) return null;
       const roleCol = slot ? ROLE_COLORS[slotRole(slot, job)] : '--subtext0';
@@ -208,17 +243,11 @@ const AbilityEngine = {
         : (entry.col  || roleCol);
       return { name, type: entry.id, p: entry.p, col };
     }
-    // Passthrough — literal string (e.g. "Everything", "Use Personals")
     const col = slot ? ROLE_COLORS[slotRole(slot, job)] : '--subtext0';
     return { name: uID.trim(), type: 'SPEC', p: 0, col };
   }
 };
 
-
-// ─────────────────────────────────────────────
-// PILL STYLES — injected at runtime so all pill
-// logic lives here, not in the fight HTML.
-// ─────────────────────────────────────────────
 (function injectPillStyles() {
   const style = document.createElement('style');
   style.textContent = `
@@ -236,11 +265,6 @@ const AbilityEngine = {
   document.head.appendChild(style);
 })();
 
-
-// ─────────────────────────────────────────────
-// HEADER COLUMN DEFINITIONS
-// Shared across all 8-man fight sheets.
-// ─────────────────────────────────────────────
 const HEADER_COLS = [
   { slot: 'T1', cls: 'col-t', type: 'tank'   },
   { slot: 'T2', cls: 'col-t', type: 'tank'   },
@@ -252,11 +276,6 @@ const HEADER_COLS = [
   { slot: 'R2', cls: 'col-r', type: 'ranged' },
 ];
 
-
-// ─────────────────────────────────────────────
-// JOB OPTIONS
-// [abbreviation, full name, icon path]
-// ─────────────────────────────────────────────
 const JOB_OPTIONS = {
   tank: {
     icon: '../images/icons/roletank.png',
