@@ -2,7 +2,8 @@ import { useState, useEffect, useRef } from "react";
 import { JOB_OPTIONS, HEADER_COLS } from "../data/abilityDb";
 
 function jobIcon(key) {
-  return `/images/icons/${key.toLowerCase()}.png`;
+  const baseUrl = import.meta.env.BASE_URL;
+  return `${baseUrl}images/icons/${key.toLowerCase()}.png`;
 }
 
 export default function JobDropdown({ slot, value, onChange }) {
