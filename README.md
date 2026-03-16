@@ -1,12 +1,16 @@
-# Did You Mit (DYM)?
+# React + Vite
 
-> *"Did 'ya Mit, lois?!"*
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-A community mitigation plan resource for FFXIV Extreme, Savage and Ultimate fights, inspired by ([WTFDIG](https://wtfdig.info/)), but for mit sheets. Finding a good mitplan can be just as frustrating as figuring out strats, especially with all the info sread around in discords and google sheets. Started as a little thing for my own static, then figured the rest of the community might get some use out of it too.
+Currently, two official plugins are available:
 
-A clean, readable reference for mitigation planning. Select your party composition from the dropdowns and generic ability names (Party Mit, Invulnerability, Short Mit) resolve to the actual job-specific skill names for your comp.
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
 
-**Currently testing:**
-- M12S — Lindwurm (which only has data implemented for tanks, the rest is still )
+## React Compiler
 
-**I'm still working on it. Yes, it's a mess, still. No, I haven't completed M12S yet. Plsbepatientkthx**
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+
+## Expanding the ESLint configuration
+
+If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
